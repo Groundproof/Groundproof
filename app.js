@@ -46,7 +46,7 @@ function render() {
   const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
-  $('captureStart').innerHTML=last?'Nächsten realen Schritt erfassen <span aria-hidden="true">→</span>':'Ausgangslage erfassen <span aria-hidden="true">→</span>';
+  $('captureStart').textContent=last?'Nächsten realen Schritt erfassen →':'Ausgangslage erfassen →';
   const link=new URL(location.href);link.search='';link.hash='';link.searchParams.set('id',physicalId);
   $('identityLink').href=link.href;$('identityLink').textContent=link.href;
   $('captureStart').disabled=$('captureAgain').disabled=!healthy;
