@@ -92,7 +92,7 @@ async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
-  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';confirmation();show('Eintrag');
+  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';confirmation();show('capture');
 }
 async function choosePhoto(event) {
   const file=event.target.files?.[0];
@@ -132,10 +132,13 @@ for(const id of ['captureStart','EintragAgain'])$(id).addEventListener('click',s
 for(const id of ['navAsset','backAsset','cancelCapture'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
 $('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
-$('identityForm').addEventListener('submit',event=>{
+$('identityForm').addEventListener('submit',async event=>{
   event.preventDefault();const id=$('identityInput').value.trim();
-  if(!validId(id)){message('Ungültige Physical ID.','error');return;}
-  const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('id',id);location.assign(url.href);
+  if(!validId(id)){message('Ungültige ID. Bitte nur Buchstaben, Zahlen, _ oder - verwenden.','error');return;}
+  physicalId=id;
+  const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('id',id);
+  history.replaceState(null,'',url.href);
+  message();show('asset');await refresh();
 });
 async function init() {
   // Preserve old gp_proofs verbatim. Never parse, trust, or silently migrate old test records.
