@@ -20,16 +20,16 @@
   <div class="eyebrow">Einfacher Baustellen-Nachweis</div>
   <h1>Alle Beteiligten sehen, was an diesem Ort gemacht wurde – ohne Fotos, Chats und Notizen zusammensuchen zu müssen.</h1>
   <p class="lead">GroundProof gibt jedem Arbeitsbereich auf der Baustelle einen QR-Code. Wer ihn scannt, sieht den bisherigen Verlauf und kann direkt ein neues Foto mit dem ausgeführten Arbeitsschritt hinzufügen. Bauleitung und beteiligte Firmen sehen damit auf einen Blick, was geplant war, was vor Ort angetroffen und tatsächlich ausgeführt wurde, welche Abweichungen aufgetreten sind und wie das Ergebnis aussieht.</p>
-  <div class="journey" aria-label="GroundProof Ablauf">
-    <div class="journey-step"><b>1</b><span>Auftrag</span><small>Was ist geplant?</small></div>
+  <div class="journey visual-timeline" aria-label="GroundProof Ablauf">
+    <div class="journey-step"><b>1</b><div class="step-icon" aria-hidden="true">▤</div><div class="step-copy"><span>Auftrag</span><strong>Was ist geplant?</strong><small>z. B. Steckdose hier montieren</small></div></div>
     <div class="flow-arrow" aria-hidden="true"><span></span></div>
-    <div class="journey-step"><b>2</b><span>Bestand</span><small>Was ist vor Ort?</small></div>
+    <div class="journey-step"><b>2</b><div class="step-icon" aria-hidden="true">⌕</div><div class="step-copy"><span>Bestand</span><strong>Was ist vor Ort?</strong><small>Ausgangslage mit Foto festhalten</small></div></div>
     <div class="flow-arrow" aria-hidden="true"><span></span></div>
-    <div class="journey-step"><b>3</b><span>Ausführung</span><small>Was wurde gemacht?</small></div>
+    <div class="journey-step"><b>3</b><div class="step-icon" aria-hidden="true">⌁</div><div class="step-copy"><span>Ausführung</span><strong>Was wurde gemacht?</strong><small>Arbeit und Abweichungen dokumentieren</small></div></div>
     <div class="flow-arrow" aria-hidden="true"><span></span></div>
-    <div class="journey-step"><b>4</b><span>Ergebnis</span><small>Was ist entstanden?</small></div>
+    <div class="journey-step"><b>4</b><div class="step-icon step-done" aria-hidden="true">✓</div><div class="step-copy"><span>Ergebnis</span><strong>Was ist entstanden?</strong><small>Fertiges Ergebnis mit Foto abschliessen</small></div></div>
   </div>
-  <div class="value-card"><strong>Ein QR-Code wird zum gemeinsamen Bautagebuch für genau diesen Ort.</strong><p>Beispiel Elektro: QR-Code am Raum scannen → Foto der Ausgangslage → „Leitung 16,5 m verlegt“ → später Foto des fertigen Anschlusses. Der nächste Handwerker oder die Bauleitung sieht sofort, was hier passiert ist.</p></div>
+  <div class="value-card"><strong>Ein QR-Code wird zum gemeinsamen Bautagebuch für genau diesen Ort.</strong><p>Wer den Code scannt, sieht den bisherigen Verlauf und kann direkt einen neuen Eintrag hinzufügen.</p></div>
   <form id="identityForm" class="card" method="get">
     <label for="identityInput">Projekt / Arbeitsbereich</label>
     <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="Musterprojekt-Wand-A" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
