@@ -65,9 +65,9 @@ function render() {
     const img=element('img',undefined,'preview');img.alt='Verkleinerte Ansicht · Capture '+entry.sequence;img.loading='lazy';
     const preview=URL.createObjectURL(evidence.preview);historyURLs.push(preview);img.src=preview;item.append(img);
     const original=URL.createObjectURL(evidence.original);historyURLs.push(original);
-    const download=element('a','Original Evidence öffnen / herunterladen','download');download.href=original;download.download=`${physicalId}-${entry.sequence}.${({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'})[entry.originalEvidence.mime]}`;
+    const download=element('a','Datei herunterladen','download');download.href=original;download.download=`${physicalId}-${entry.sequence}.${({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'})[entry.originalEvidence.mime]}`;
     item.append(download,element('small',`Original unverändert gespeichert · ${(entry.originalEvidence.bytes/1024/1024).toFixed(2)} MiB`));
-    const details=element('details');details.append(element('summary','Integrity / Provenance · Hashes'));
+    const details=element('details');details.append(element('summary','Technische Nachweisdetails'));
     for(const [label,value] of [['Original SHA-256',entry.originalEvidence.sha256],['Verkleinerte Ansicht SHA-256',entry.derived.previewSha256],['Ledger SHA-256',entry.hash],['Vorheriger Ledger-Hash',entry.previousHash]])details.append(element('div',label,'muted'),element('div',value,'hash'));
     item.append(details);$('timeline').append(item);
   });
