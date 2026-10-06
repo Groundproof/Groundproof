@@ -37,8 +37,8 @@
 </section>
 <section id="asset" hidden>
   <div id="phaseStrip" class="phase-strip" aria-label="Arbeitsablauf"><span>Auftrag</span><span>Bestand</span><span>Ausführung</span><span>Ergebnis</span></div>
-  <div class="eyebrow">Aktueller Testfall</div><h1 id="assetId"></h1>
-  <p class="lead">Dokumentiere die reale Ausgangslage und führe denselben Fall später bis zum tatsächlichen Ergebnis weiter.</p>
+  <div class="eyebrow">Projekt / Arbeitsbereich</div><h1 id="assetId"></h1>
+  <p class="lead">Hier entsteht der gemeinsame Verlauf dieses Arbeitsbereichs: Auftrag, Situation vor Ort, ausgeführte Arbeit, Abweichungen und Ergebnis.</p>
   <div class="insight-grid">
     <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
     <article><small>Realität</small><strong id="actualSummary">Noch kein Capture</strong></article>
@@ -58,14 +58,14 @@
     <div><small>Geplant</small><strong id="plannedView">—</strong></div><div aria-hidden="true">→</div><div><small>Dokumentiert</small><strong id="documentedView">—</strong></div>
   </div>
   <div class="card">
-    <div class="muted">Letzter bestätigter Zustand</div><h2 id="lastState" class="state"></h2>
+    <div class="muted">Letzter dokumentierter Stand</div><h2 id="lastState" class="state"></h2>
     <p id="lastNote" class="state"></p><time id="lastTime"></time>
-    <p><b id="captureCount">0</b> Evidence Captures</p>
-    <p>Letzter Change: <strong id="lastChange">—</strong></p>
+    <p><b id="captureCount">0</b> Einträge mit Foto</p>
+    <p>Letzte Änderung: <strong id="lastChange">—</strong></p>
   </div>
   <button id="captureStart">Vor-Ort-Zustand dokumentieren <span aria-hidden="true">→</span></button>
-  <button id="historyOpen" class="secondary">Vollständige History</button>
-  <details class="card"><summary>Link / QR-Ziel dieser Physical ID</summary><a id="identityLink" class="identity-link"></a><p class="muted">Den Link als QR-Ziel verwenden und am Objekt anbringen. Auf einem anderen Gerät öffnet sich dieselbe ID, aber nicht die hier lokal gespeicherte History.</p></details>
+  <button id="historyOpen" class="secondary">Verlauf ansehen</button>
+  <details class="card"><summary>QR-Link für diesen Arbeitsbereich</summary><a id="identityLink" class="identity-link"></a><p class="muted">Diesen Link kann ein QR-Code am Arbeitsbereich öffnen. Im lokalen Prototyp bleibt der gespeicherte Verlauf jedoch auf diesem Gerät.</p></details>
 </section>
 <section id="capture" hidden>
   <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist vor Ort – und was passiert jetzt?</h1><p id="captureId"></p>
@@ -79,28 +79,28 @@
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
     <label for="stageType">Was dokumentierst du?</label><select id="stageType"><option value="assess">Auftrag / Soll</option><option value="count">Bestand vor Ort</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Ergebnis / Abschluss</option></select>
     <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
-    <div class="confidence"><span>GroundProof-Ausgabe</span><strong>Von dir bestätigt</strong><small>Dieser Prototyp erkennt Inhalte noch nicht automatisch. Angaben stammen von dir; das Foto bleibt als Original Evidence getrennt gespeichert.</small></div>
+    <details class="capture-options"><summary>Weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
     <div class="row">
       <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div>
       <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="m²"></div>
     </div>
-    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea>
-    <p id="confirmation" class="notice"></p>
-    <button id="saveBtn" type="button" disabled>Angaben bestätigen &amp; Proof speichern</button>
+    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
+    <p id="confirmation" class="capture-confirmation"></p>
+    <button id="saveBtn" type="button" disabled>Eintrag speichern</button>
   </fieldset>
   <button id="cancelCapture" type="button" class="secondary">Abbrechen</button>
 </section>
 <section id="history" hidden>
   <div class="eyebrow">Soll / Ist</div><h1>Was ist wirklich passiert?</h1><p id="historyId"></p>
   <p class="lead">Alle bestätigten Zustände dieses realen Falls – vom Ausgangspunkt bis zum Ergebnis. So wird aus einzelnen Fotos ein zusammenhängender Verlauf.</p>
-  <p id="integrity" class="notice"></p>
+  <details class="integrity-box"><summary>Technische Prüfung</summary><p id="integrity" class="notice"></p></details>
   <ol id="timeline"></ol>
   <div id="outcome" class="outcome" hidden><small>Soll / Ist Vergleich</small><h2 id="outcomeTitle">Soll / Ist</h2><p id="outcomeText"></p><p class="muted">Nur aus bestätigten Angaben berechnet. GroundProof vermisst oder beurteilt die Arbeit in diesem Prototyp nicht automatisch.</p></div>
   <button id="captureAgain">+ Nächsten Schritt erfassen</button>
-  <button id="backAsset" class="secondary">Zurück zur Physical ID</button>
+  <button id="backAsset" class="secondary">Zurück zum Arbeitsbereich</button>
 </section>
-<p class="privacy">Hashing ist ein Integrity/Provenance Mechanism für lokale Datenkonsistenz. Es belegt weder Urheber, Aufnahmezeit, Ort noch Wahrheit der Angaben und verleiht keine rechtliche Beweiskraft. Wer Browserdaten kontrolliert, kann die gesamte Kette neu berechnen oder löschen.</p>
+<details class="privacy"><summary>Rechtlicher und technischer Hinweis</summary><p>Die technische Prüfung schützt nur die lokale Konsistenz. Sie bestätigt weder Urheber, Aufnahmeort, Wahrheit der Angaben noch rechtliche Beweiskraft.</p></details>
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
-<nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Physical ID</button><button id="navHistory" class="secondary" disabled>History</button></nav>
+<nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
 </body></html>
