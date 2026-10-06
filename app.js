@@ -173,7 +173,7 @@ $('simulateCount').addEventListener('click',()=>{if(!prepared){message('Nimm zue
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{});
-for(const id of ['captureStart','EintragAgain','continueTask'])$(id).addEventListener('click',startCapture);
+for(const id of ['captureStart','EintragAgain','continueTask','assignmentPhoto'])$(id).addEventListener('click',startCapture);
 for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
 $('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
