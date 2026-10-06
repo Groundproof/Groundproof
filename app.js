@@ -4,11 +4,15 @@ let db, physicalId=null, snapshot={entries:[],evidence:[]}, healthy=false;
 let prepared=null, captureStarted=0, generation=0, refreshGeneration=0, saving=false, processing=false;
 let previewURL=null, historyURLs=[];
 const planKey=id=>'gp_plan_'+id;
+const authorKey='gp_author_v1';
+function getAuthor(){try{return JSON.parse(localStorage.getItem(authorKey)||'null')}catch{return null}}
+function setAuthor(v){localStorage.setItem(authorKey,JSON.stringify(v))}
+function authorFrom(note=''){const m=note.match(/\[GPA:([^:\]]*)(?::([^\]]*))?\]/);return m?{name:decodeURIComponent(m[1]||''),company:decodeURIComponent(m[2]||'')}:null}
 function getPlan(){try{return JSON.parse(localStorage.getItem(planKey(physicalId))||'null')}catch{return null}}
 function setPlan(plan){localStorage.setItem(planKey(physicalId),JSON.stringify(plan))}
 function quantityFrom(note=''){const m=note.match(/\[GPQ:([^:\]]+):([^\]]+)\]/);return m?{value:Number(m[1]),unit:m[2]}:null}
 function stageFrom(note=''){return note.match(/\[GPS:(assess|count|build|yield)\]/)?.[1]||'assess'}
-function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(/\s*\[GPS:[^\]]+\]/,'').trim()}
+function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(/\s*\[GPS:[^\]]+\]/,'').replace(/\s*\[GPA:[^\]]+\]/,'').trim()}
 const navigation=['navHome','navAsset','navHistory','cancelCapture'];
 function message(text='',kind='') { $('message').textContent=text;$('message').className='notice '+kind;$('message').hidden=!text; }
 function show(id) {
@@ -60,7 +64,7 @@ function render() {
     const item=element('li',undefined,'proof');
     item.append(element('time',`#${entry.sequence} · ${formatTime(entry.createdAt)} (Gerätezeit)`),element('h2',CHANGES[entry.human.change]),element('p','Bestätigter Zustand: '+entry.human.state,'state'));
     if(i)item.append(element('p','Vorher: '+snapshot.entries[i-1].human.state,'muted'));
-    item.append(element('div',stageFrom(entry.human.note).toUpperCase(),'stage-badge'));const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
+    item.append(element('div',stageFrom(entry.human.note).toUpperCase(),'stage-badge'));const author=authorFrom(entry.human.note);if(author?.name)item.append(element('p','Dokumentiert von '+author.name+(author.company?' · '+author.company:''),'author-line'));const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
     const evidence=snapshot.evidence[i];
     const img=element('img',undefined,'preview');img.alt='Verkleinerte Ansicht · Eintrag '+entry.sequence;img.loading='lazy';
     const preview=URL.createObjectURL(evidence.preview);historyURLs.push(preview);img.src=preview;item.append(img);
@@ -109,7 +113,7 @@ async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
   busy(true);message('Eintrag wird gespeichert …');
   try {
-    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;
+    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName)throw new Error('Bitte gib an, wer diesen Eintrag dokumentiert.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
     const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
