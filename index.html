@@ -101,10 +101,9 @@
       <div class="sim-badge">SIMULIERTE FOTO-AUSWERTUNG</div>
       <strong>GroundProof würde jetzt das Material im Foto erkennen.</strong>
       <small>Im kostenlosen Prototyp gibst du das erkannte Material einmal selbst an. So testen wir den späteren KI-Ablauf, ohne automatische Erkennung vorzutäuschen.</small>
-      <label for="materialType">Was wurde erkannt?</label>
-      <input id="materialType" maxlength="80" placeholder="z. B. Rohre">
-      <div class="sim-result"><span>Vorgeschlagene Menge</span><strong id="countSuggestion">—</strong><small id="countHint">Material angeben, dann simuliert GroundProof einen Vorschlag.</small></div>
-      <button id="simulateCount" type="button" class="secondary">Foto-Auswertung simulieren</button>
+      <div class="sim-result"><span>Im Foto erkannt</span><strong id="materialSuggestion">Noch nicht ausgewertet</strong><span>Vorgeschlagene Menge</span><strong id="countSuggestion">—</strong><small id="countHint">Nach dem Foto simuliert GroundProof automatisch Materialerkennung und Zählung.</small></div>
+      <button id="simulateCount" type="button" class="secondary">Foto erneut simuliert auswerten</button>
+      <input id="materialType" type="hidden">
       <div class="row"><div><label for="actualQty">Bestätigte Menge</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 18"></div><div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="z. B. Stk."></div></div>
       <small>Du bestätigst oder korrigierst den Vorschlag. Nur deine bestätigte Menge wird als Angabe gespeichert.</small>
     </div>
@@ -130,5 +129,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1156"></script>
+<script type="module" src="./app.js?v=1157"></script>
 </body></html>
