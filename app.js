@@ -3,6 +3,11 @@ const $=id=>document.getElementById(id);
 let db, physicalId=null, snapshot={entries:[],evidence:[]}, healthy=false;
 let prepared=null, captureStarted=0, generation=0, refreshGeneration=0, saving=false, processing=false;
 let previewURL=null, historyURLs=[];
+const planKey=id=>'gp_plan_'+id;
+function getPlan(){try{return JSON.parse(localStorage.getItem(planKey(physicalId))||'null')}catch{return null}}
+function setPlan(plan){localStorage.setItem(planKey(physicalId),JSON.stringify(plan))}
+function quantityFrom(note=''){const m=note.match(/\[GPQ:([^:\]]+):([^\]]+)\]/);return m?{value:Number(m[1]),unit:m[2]}:null}
+function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').trim()}
 const navigation=['navHome','navAsset','navHistory','cancelCapture'];
 function message(text='',kind='') { $('message').textContent=text;$('message').className='notice '+kind;$('message').hidden=!text; }
 function show(id) {
@@ -20,7 +25,7 @@ function busy(value) {
 function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
-  $('photo').value='';$('photoFallback').value='';$('note').value='';$('eventType').value='updated';
+  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('eventType').value='updated';
   $('preview').removeAttribute('src');$('preview').hidden=true;$('photoStatus').textContent='';$('saveBtn').disabled=true;
 }
 function revokeHistory() {for(const url of historyURLs)URL.revokeObjectURL(url);historyURLs=[];$('timeline').replaceChildren();}
@@ -34,8 +39,13 @@ function render() {
   $('lastTime').textContent=healthy && last?'Bestätigt laut Gerätezeit: '+formatTime(last.createdAt):'';
   $('captureCount').textContent=healthy?String(snapshot.entries.length):'—';
   $('lastChange').textContent=healthy && last?CHANGES[last.human.change]:'—';
+  const plan=getPlan();
+  $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
   $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Capture';
-  $('expectedSummary').textContent=healthy && last?'Ausgangslage dokumentiert':'Noch nicht erfasst';
+  $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';
+  const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
+  $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
+  $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
   $('captureStart').innerHTML=last?'Nächsten realen Schritt erfassen <span aria-hidden="true">→</span>':'Ausgangslage erfassen <span aria-hidden="true">→</span>';
   const link=new URL(location.href);link.search='';link.hash='';link.searchParams.set('id',physicalId);
   $('identityLink').href=link.href;$('identityLink').textContent=link.href;
@@ -49,7 +59,7 @@ function render() {
     const item=element('li',undefined,'proof');
     item.append(element('time',`#${entry.sequence} · ${formatTime(entry.createdAt)} (Gerätezeit)`),element('h2',CHANGES[entry.human.change]),element('p','Bestätigter Zustand: '+entry.human.state,'state'));
     if(i)item.append(element('p','Vorher: '+snapshot.entries[i-1].human.state,'muted'));
-    if(entry.human.note)item.append(element('p',entry.human.note,'state'));
+    const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
     const evidence=snapshot.evidence[i];
     const img=element('img',undefined,'preview');img.alt='Verkleinerte Ansicht · Capture '+entry.sequence;img.loading='lazy';
     const preview=URL.createObjectURL(evidence.preview);historyURLs.push(preview);img.src=preview;item.append(img);
@@ -100,7 +110,8 @@ async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
   busy(true);message('Proof wird lokal gespeichert …');
   try {
-    const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,$('note').value,snapshot.entries.at(-1)?.hash || 'GENESIS');
+    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}
+    const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
     clearCapture();await refresh();show('asset');
@@ -113,6 +124,7 @@ for(const [value,label] of Object.entries(CHANGES)) {const option=element('optio
 $('eventType').addEventListener('change',confirmation);
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
+$('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe den erwarteten Umfang oder gib eine geplante Menge an.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
 for(const id of ['captureStart','captureAgain'])$(id).addEventListener('click',startCapture);
 for(const id of ['navAsset','backAsset','cancelCapture'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
