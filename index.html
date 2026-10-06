@@ -43,6 +43,20 @@
     <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
     <article><small>Realität</small><strong id="actualSummary">Noch kein Capture</strong></article>
   </div>
+  <div id="caseSetup" class="card">
+    <h2>Was soll hier passieren?</h2>
+    <p class="muted">Definiere kurz den erwarteten Umfang. GroundProof stellt ihn später der dokumentierten Realität gegenüber.</p>
+    <label for="scopeInput">Erwarteter Umfang</label>
+    <textarea id="scopeInput" rows="2" maxlength="280" placeholder="z. B. Wand vollständig dämmen und verkleiden"></textarea>
+    <div class="row">
+      <div><label for="plannedQty">Geplant</label><input id="plannedQty" type="number" inputmode="decimal" min="0" step="any" placeholder="22"></div>
+      <div><label for="qtyUnit">Einheit</label><input id="qtyUnit" maxlength="12" placeholder="m²"></div>
+    </div>
+    <button id="savePlan" type="button" class="secondary">Erwartung festhalten</button>
+  </div>
+  <div id="comparison" class="comparison" hidden>
+    <div><small>Geplant</small><strong id="plannedView">—</strong></div><div aria-hidden="true">→</div><div><small>Dokumentiert</small><strong id="documentedView">—</strong></div>
+  </div>
   <div class="card">
     <div class="muted">Letzter bestätigter Zustand</div><h2 id="lastState" class="state"></h2>
     <p id="lastNote" class="state"></p><time id="lastTime"></time>
@@ -65,7 +79,11 @@
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
     <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
     <div class="confidence"><span>GroundProof-Ausgabe</span><strong>Von dir bestätigt</strong><small>Dieser Prototyp erkennt Inhalte noch nicht automatisch. Angaben stammen von dir; das Foto bleibt als Original Evidence getrennt gespeichert.</small></div>
-    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Dämmung montiert; Anschluss links noch offen"></textarea>
+    <div class="row">
+      <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="20.8"></div>
+      <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="m²"></div>
+    </div>
+    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea>
     <p id="confirmation" class="notice"></p>
     <button id="saveBtn" type="button" disabled>Angaben bestätigen &amp; Proof speichern</button>
   </fieldset>
@@ -76,7 +94,8 @@
   <p class="lead">Alle bestätigten Zustände dieses realen Falls – vom Ausgangspunkt bis zum Ergebnis. So wird aus einzelnen Fotos ein zusammenhängender Verlauf.</p>
   <p id="integrity" class="notice"></p>
   <ol id="timeline"></ol>
-  <button id="captureAgain">+ Neuer Capture</button>
+  <div id="outcome" class="outcome" hidden><small>GroundProof Vergleich</small><h2 id="outcomeTitle">Soll / Ist</h2><p id="outcomeText"></p><p class="muted">Nur aus deinen bestätigten Angaben berechnet; keine automatische Vermessung.</p></div>
+  <button id="captureAgain">+ Nächsten Schritt erfassen</button>
   <button id="backAsset" class="secondary">Zurück zur Physical ID</button>
 </section>
 <p class="privacy">Hashing ist ein Integrity/Provenance Mechanism für lokale Datenkonsistenz. Es belegt weder Urheber, Aufnahmezeit, Ort noch Wahrheit der Angaben und verleiht keine rechtliche Beweiskraft. Wer Browserdaten kontrolliert, kann die gesamte Kette neu berechnen oder löschen.</p>
