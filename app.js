@@ -54,7 +54,7 @@ function render() {
   let plan=getPlan();if(!plan){plan={scope:'Neue Steckdose neben der Tür installieren',qty:'1',unit:'Stk.',owner:'Projektverantwortung',confirmedAt:'prototype'};setPlan(plan);}const stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
   $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
   $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Eintrag';
-  $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';$('plannedQty').readOnly=true;$('qtyUnit').readOnly=true;
+  $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';$('ownerQtyText').textContent=plan?.qty&&plan?.unit?`${plan.qty} ${plan.unit}`:'Keine Soll-Menge';
   const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
