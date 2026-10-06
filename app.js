@@ -34,6 +34,9 @@ function render() {
   $('lastTime').textContent=healthy && last?'Bestätigt laut Gerätezeit: '+formatTime(last.createdAt):'';
   $('captureCount').textContent=healthy?String(snapshot.entries.length):'—';
   $('lastChange').textContent=healthy && last?CHANGES[last.human.change]:'—';
+  $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Capture';
+  $('expectedSummary').textContent=healthy && last?'Ausgangslage dokumentiert':'Noch nicht erfasst';
+  $('captureStart').innerHTML=last?'Nächsten realen Schritt erfassen <span aria-hidden="true">→</span>':'Ausgangslage erfassen <span aria-hidden="true">→</span>';
   const link=new URL(location.href);link.search='';link.hash='';link.searchParams.set('id',physicalId);
   $('identityLink').href=link.href;$('identityLink').textContent=link.href;
   $('captureStart').disabled=$('captureAgain').disabled=!healthy;
