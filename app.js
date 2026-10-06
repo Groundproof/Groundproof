@@ -213,6 +213,7 @@ $('registerForm').addEventListener('submit',async event=>{
   const name=$('registerName').value.trim(),company=$('registerCompany').value.trim(),role=$('registerRole').value.trim();
   if(!name||!company||!role||!$('registerConfirm').checked){message('Bitte alle Pflichtfelder ausfüllen und bestätigen.','error');return;}
   setProfile({name,company,role,createdAt:new Date().toISOString()});setAuthor({name,company});
+  try{db=await openDB();}catch(e){message(friendlyError(e),'error');return;}
   $('authorName').value=name;$('authorCompany').value=company;$('authorDisplay').textContent=`Dokumentiert von ${name} · ${company}`;
   message('Profil eingerichtet. Du kannst GroundProof jetzt verwenden.','success');
   if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}else show('home');
