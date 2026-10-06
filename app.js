@@ -4,6 +4,7 @@ let db, physicalId=null, snapshot={entries:[],evidence:[]}, healthy=false;
 let prepared=null, captureStarted=0, generation=0, refreshGeneration=0, saving=false, processing=false;
 let previewURL=null, historyURLs=[];
 const planKey=id=>'gp_plan_'+id;
+const countKey=id=>'gp_count_'+id;
 const authorKey='gp_author_v1';
 const profileKey='gp_profile_v1';
 function getProfile(){try{return JSON.parse(localStorage.getItem(profileKey)||'null')}catch{return null}}
@@ -17,6 +18,8 @@ function setAuthor(v){localStorage.setItem(authorKey,JSON.stringify(v))}
 function authorFrom(note=''){const m=note.match(/\[GPA:([^:\]]*)(?::([^\]]*))?\]/);return m?{name:decodeURIComponent(m[1]||''),company:decodeURIComponent(m[2]||'')}:null}
 function getPlan(){try{return JSON.parse(localStorage.getItem(planKey(physicalId))||'null')}catch{return null}}
 function setPlan(plan){localStorage.setItem(planKey(physicalId),JSON.stringify(plan))}
+function getCount(){try{return JSON.parse(localStorage.getItem(countKey(physicalId))||'null')}catch{return null}}
+function setCount(v){localStorage.setItem(countKey(physicalId),JSON.stringify(v))}
 function quantityFrom(note=''){const m=note.match(/\[GPQ:([^:\]]+):([^\]]+)\]/);return m?{value:Number(m[1]),unit:m[2]}:null}
 function stageFrom(note=''){return note.match(/\[GPS:(assess|count|build|yield)\]/)?.[1]||'assess'}
 function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(/\s*\[GPS:[^\]]+\]/,'').replace(/\s*\[GPA:[^\]]+\]/,'').trim()}
@@ -55,10 +58,10 @@ function render() {
   $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
   $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Eintrag';
   $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';$('ownerQtyText').textContent=plan?.qty&&plan?.unit?`${plan.qty} ${plan.unit}`:'Keine Soll-Menge';
-  const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
+  const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), storedCount=getCount(), lastQ=qs.at(-1)||storedCount;
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
-  const nextStage=last?({assess:'count',count:'build',build:'yield',yield:'yield'}[stage]||'assess'):'assess';
+  const nextStage=last?({assess:'build',count:'build',build:'yield',yield:'yield'}[stage]||'assess'):'assess';
   const nextCopy={assess:['Ausgangslage festhalten','Dokumentiere zuerst die Situation vor Beginn der Arbeit.'],count:['Material / Bestand erfassen','Erfasse vorhandenes Material als zusätzlichen Schritt, bevor die Ausführung dokumentiert wird.'],build:['Ausführung dokumentieren','Halte fest, was tatsächlich ausgeführt wurde.'],yield:['Ergebnis festhalten','Dokumentiere den fertigen oder aktuellen Endstand.']}[nextStage];
   const draft=getDraft();$('nextStepTitle').textContent=draft?'Offenen Eintrag fortsetzen':nextCopy[0];$('nextStepText').textContent=draft?'Du hast diesen Schritt bereits begonnen. Deine Angaben bleiben erhalten.':nextCopy[1];
   $('captureStart').textContent=draft?'Offenen Eintrag fortsetzen →':(last?'Nächsten realen Schritt erfassen →':'Vor-Ort-Zustand dokumentieren →');
@@ -74,7 +77,7 @@ function render() {
     const item=element('li',undefined,'proof');
     item.append(element('time',`#${entry.sequence} · ${formatTime(entry.createdAt)} (Gerätezeit)`),element('h2',CHANGES[entry.human.change]),element('p','Bestätigter Zustand: '+entry.human.state,'state'));
     if(i)item.append(element('p','Vorher: '+snapshot.entries[i-1].human.state,'muted'));
-    item.append(element('div',stageFrom(entry.human.note).toUpperCase(),'stage-badge'));const author=authorFrom(entry.human.note);if(author?.name)item.append(element('p','Dokumentiert von '+author.name+(author.company?' · '+author.company:''),'author-line'));const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
+    item.append(element('div',({assess:'Ausgangslage',count:'Material / Bestand',build:'Ausführung',yield:'Ergebnis'}[stageFrom(entry.human.note)]||'Ausgangslage'),'stage-badge'));const author=authorFrom(entry.human.note);if(author?.name)item.append(element('p','Dokumentiert von '+author.name+(author.company?' · '+author.company:''),'author-line'));const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
     const evidence=snapshot.evidence[i];
     const img=element('img',undefined,'preview');img.alt='Verkleinerte Ansicht · Eintrag '+entry.sequence;img.loading='lazy';
     const preview=URL.createObjectURL(evidence.preview);historyURLs.push(preview);img.src=preview;item.append(img);
@@ -111,7 +114,7 @@ async async function startCapture() {
   await refresh();if(!healthy)return;
   const last=snapshot.entries.at(-1), order=['assess','count','build','yield'],draft=getDraft();
   if(draft){$('stageType').value=draft.stage||'assess';$('materialType').value=draft.material||'';$('actualQty').value=draft.qty||'';$('actualUnit').value=draft.unit||'';$('note').value=draft.note||'';}
-  else if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';
+  else if(last){const current=stageFrom(last.human.note);$('stageType').value=current==='assess'?'build':current==='count'?'build':current==='build'?'yield':'yield';}else $('stageType').value='assess';
   updateGuidance();confirmation();show('capture');
 }
 async function choosePhoto(event) {
@@ -133,7 +136,7 @@ async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
   busy(true);message('Eintrag wird gespeichert …');
   try {
-    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();if($('stageType').value==='count'&&(!q||!u))throw new Error('Bitte Menge und Einheit für den Bestand angeben.');let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName||!authorCompany)throw new Error('Dein Profil ist unvollständig. Bitte GroundProof neu öffnen und Profil vervollständigen.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
+    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim(),material=$('materialType').value.trim()||'Rohre';if($('stageType').value==='count'&&(!q||!u))throw new Error('Bitte Menge und Einheit für den Bestand angeben.');let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName||!authorCompany)throw new Error('Dein Profil ist unvollständig. Bitte GroundProof neu öffnen und Profil vervollständigen.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
     const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');clearDraft();
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
@@ -168,6 +171,7 @@ $('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('act
 $('countConfirm').addEventListener('click',()=>{
   const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();
   if(!q||!u){message('Bitte erkannte Menge und Einheit prüfen.','error');return;}
+  const profile=getProfile();setCount({value:Number(q),unit:u,material,suggestedValue:18,source:'simulated-photo-analysis',humanConfirmed:true,confirmedAt:new Date().toISOString(),author:profile?{name:profile.name,company:profile.company}:null});
   clearDraft();clearCapture();show('asset');
   $('documentedView').textContent=`${q} ${u}`;
   $('comparison').hidden=false;
