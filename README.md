@@ -1,8 +1,10 @@
-# GroundProof · Product Prototype V0.2
+# GroundProof · Product Prototype V0.3
 
 A CHF 0, local-browser **Physical Reality Ledger** product prototype. V0.2 keeps the V0.1 evidence/integrity foundation but moves the test surface toward the intended end product: **Assess → Count → Build → Yield → planned-vs-documented outcome**. This extends the original `index.html` prototype: the existing Start → Physical ID → Capture → History screens and small mobile stylesheet remain the foundation. CSS and JavaScript are now separated for review and QA. No framework, runtime dependencies, build step, account, API, AI, ERP, database server, analytics or upload.
 
-**Flow:** open/QR a real case → state expected scope/quantity → capture the real condition → human-confirm change and optional actual quantity → continue the same physical case → compare planned vs documented → inspect chronological original evidence/history.
+**Flow:** Projekt/Arbeitsbereich oder QR öffnen → Auftrag/Soll optional festhalten → dominanten „Foto aufnehmen“-Button nutzen → bei Bedarf Arbeitsschritt, Menge, Einheit oder Notiz ergänzen → speichern → Verlauf/Soll-Ist ansehen.
+
+V0.3 incorporates direct construction-user feedback: no English product-model vocabulary in the primary UI; no cryptic Physical-ID language; camera action is visually dominant; technical/legal integrity details use progressive disclosure; quantities are optional and trade-neutral (e.g. m, m², Stück, kg, Liter, Stunden).
 
 V0.2 deliberately does **not** pretend to perform AI vision or automatic measurement. The prototype tests whether the end-to-end product concept makes sense before any paid/cloud AI is introduced. Quantities and scope are human-confirmed; the UI labels this boundary. The differentiating hypothesis is the continuous expected → actual → execution → outcome record, not photo-to-quote alone.
 
