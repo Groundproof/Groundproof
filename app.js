@@ -90,7 +90,7 @@ async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
-  confirmation();show('capture');
+  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';confirmation();show('capture');
 }
 async function choosePhoto(event) {
   const file=event.target.files?.[0];
