@@ -6,26 +6,34 @@
 <meta name="theme-color" content="#111827">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
-<title>GroundProof V0.1</title>
+<title>GroundProof · Physical Reality Ledger</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 <script type="module" src="app.js"></script>
 </head>
 <body><main class="app">
-<header><div class="brand">GroundProof</div><div class="tag">V0.1 · lokal</div></header>
-<p class="notice">Physical Evidence / Material Ledger · Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p>
+<header><div class="brand">GroundProof</div><div class="tag">Prototype · lokal</div></header>
+<p class="notice">Lokaler Prototyp · Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p>
 <p id="message" role="status" aria-live="polite" hidden></p>
 <p id="legacy" class="notice" hidden></p>
 <section id="home">
-  <h1>Ein Objekt. Ein Verlauf.</h1>
-  <p>Ein Bauteil, Material oder Ort erhält eine feste Physical ID. Jeder bestätigte Capture ergänzt dessen Zustands- und Änderungsverlauf.</p>
+  <div class="eyebrow">Physical Reality Ledger</div>
+  <h1>Von der Einschätzung bis zum echten Ergebnis.</h1>
+  <p class="lead">GroundProof verbindet, was du vor Ort erwartest, mit dem, was tatsächlich vorhanden, ausgeführt und übrig geblieben ist – nachvollziehbar am selben realen Objekt.</p>
+  <div class="journey" aria-label="GroundProof Ablauf">
+    <div><b>1</b><span>Assess</span><small>Ausgangslage</small></div>
+    <div><b>2</b><span>Count</span><small>Tatsächlich da</small></div>
+    <div><b>3</b><span>Build</span><small>Ausgeführt</small></div>
+    <div><b>4</b><span>Yield</span><small>Ergebnis</small></div>
+  </div>
+  <div class="value-card"><strong>Ein Capture soll mehr sein als ein Foto.</strong><p>GroundProof hält Erwartung, Veränderung und Ergebnis als zusammenhängenden Verlauf fest.</p></div>
   <form id="identityForm" class="card" method="get">
-    <label for="identityInput">Physical ID öffnen</label>
+    <label for="identityInput">Testfall öffnen</label>
     <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="GP-WALL-001" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
     <small id="idHelp">1–64 Zeichen: Buchstaben, Ziffern, - und _. Gross-/Kleinschreibung wird unterschieden.</small>
-    <button type="submit">Physical ID öffnen</button>
+    <button type="submit">Testfall starten <span aria-hidden="true">→</span></button>
   </form>
-  <p class="muted">Ein QR-Code kann direkt auf den Link einer Physical ID zeigen. Kein zusätzlicher Scan in der App erforderlich.</p>
+  <p class="muted">Im späteren Einsatz öffnet ein QR-Code genau diesen realen Ort, Gegenstand oder Materialposten. Für den Prototyp kannst du direkt mit dem Testfall starten.</p>
 </section>
 <section id="asset" hidden>
   <div class="muted">Physical Identity</div><h1 id="assetId"></h1>
