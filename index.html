@@ -99,7 +99,7 @@
       <strong>Wie viel ist vorhanden?</strong><small>Trage die sichtbare oder von dir geprüfte Menge ein.</small>
       <div class="row"><div><label for="actualQty">Menge</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 8"></div><div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="Stk., m, m² …"></div></div>
     </div>
-    <label for="eventType">Was hat sich verändert?</label><select id="eventType"></select>
+    <div id="eventBox" class="guided-event"><label for="eventType" id="eventLabel">Was trifft zu?</label><select id="eventType"></select><small id="eventHelp"></small></div>
     <details class="Eintrag-options"><summary>Notiz oder weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
     <div id="optionalQty" class="row"><div><label for="actualQtyMirror">Menge (optional)</label><input id="actualQtyMirror" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div><div><label for="actualUnitMirror">Einheit</label><input id="actualUnitMirror" maxlength="12" placeholder="Stk., m, m² …"></div></div>
     <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
@@ -121,5 +121,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1150"></script>
+<script type="module" src="./app.js?v=1151"></script>
 </body></html>
