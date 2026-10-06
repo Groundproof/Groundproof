@@ -46,3 +46,5 @@ details{border-radius:14px}summary{cursor:pointer;padding:8px 0;font-weight:750;
 
 /* V0.12 guided material count */
 .guided-count{margin:12px 0;padding:15px;border-radius:18px;background:#eef5f1;border:1px solid #cfddd5}.guided-count strong{display:block;color:var(--brand);font-size:16px}.guided-count small{display:block;margin:3px 0 11px}.guided-count .row{margin-top:4px}
+
+.sim-badge{display:inline-block;margin-bottom:8px;padding:4px 8px;border-radius:999px;background:#dfeae4;font-size:11px;font-weight:800;letter-spacing:.05em}.sim-result{margin:12px 0;padding:12px;border-radius:14px;background:#fff}.sim-result span,.sim-result small{display:block}.sim-result strong{display:block;margin:3px 0;font-size:24px}
