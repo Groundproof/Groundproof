@@ -116,11 +116,11 @@
     <small>Foto aufnehmen oder auswählen. Technische Dateidetails findest du später unter den Nachweisdetails.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
-    <label for="stageType">Was hältst du gerade fest?</label><select id="stageType"><option value="assess">Ausgangslage / vor der Arbeit</option><option value="count">Material oder Bestand</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Fertiges Ergebnis</option></select>
+    <div id="stageChooser"><label for="stageType">Was hältst du gerade fest?</label><select id="stageType"><option value="assess">Ausgangslage / vor der Arbeit</option><option value="count">Material oder Bestand</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Fertiges Ergebnis</option></select></div>
     <div id="countPrompt" class="guided-count" hidden>
       <div class="sim-badge">SIMULIERTE FOTO-AUSWERTUNG</div>
       <strong>GroundProof würde jetzt das Material im Foto erkennen.</strong>
-      <small>Im kostenlosen Prototyp gibst du das erkannte Material einmal selbst an. So testen wir den späteren KI-Ablauf, ohne automatische Erkennung vorzutäuschen.</small>
+      <small>Im kostenlosen Prototyp wird die Erkennung simuliert. Prüfe Material und Menge und korrigiere sie bei Bedarf.</small>
       <div class="sim-result"><span>Im Foto erkannt</span><strong id="materialSuggestion">Noch nicht ausgewertet</strong><span>Vorgeschlagene Menge</span><strong id="countSuggestion">—</strong><small id="countHint">Nach dem Foto simuliert GroundProof automatisch Materialerkennung und Zählung.</small></div>
       <button id="simulateCount" type="button" class="secondary">Foto erneut simuliert auswerten</button>
       <input id="materialType" type="hidden">
@@ -132,7 +132,7 @@
     <div id="optionalQty" class="row"><div><label for="actualQtyMirror">Menge (optional)</label><input id="actualQtyMirror" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div><div><label for="actualUnitMirror">Einheit</label><input id="actualUnitMirror" maxlength="12" placeholder="Stk., m, m² …"></div></div>
     <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
     <p id="confirmation" class="Eintrag-confirmation"></p>
-    <button id="saveBtn" type="button" disabled>Eintrag speichern</button>
+    <button id="saveBtn" type="button" disabled>Eintrag speichern</button><button id="countConfirm" type="button" hidden>Menge bestätigen</button>
   </fieldset>
   <button id="cancelEintrag" type="button" class="secondary">Abbrechen</button>
 </section>
@@ -149,5 +149,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1169"></script>
+<script type="module" src="./app.js?v=1170"></script>
 </body></html>
