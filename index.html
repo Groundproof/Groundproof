@@ -60,19 +60,19 @@
   <div class="card">
     <div class="muted">Letzter dokumentierter Stand</div><h2 id="lastState" class="state"></h2>
     <p id="lastNote" class="state"></p><time id="lastTime"></time>
-    <p><b id="EintragBestand">0</b> Einträge mit Foto</p>
+    <p><b id="captureCount">0</b> Einträge mit Foto</p>
     <p>Letzte Änderung: <strong id="lastChange">—</strong></p>
   </div>
-  <button id="EintragStart">Vor-Ort-Zustand dokumentieren <span aria-hidden="true">→</span></button>
+  <button id="captureStart">Vor-Ort-Zustand dokumentieren <span aria-hidden="true">→</span></button>
   <button id="historyOpen" class="secondary">Verlauf ansehen</button>
   <details class="card"><summary>QR-Link für diesen Arbeitsbereich</summary><a id="identityLink" class="identity-link"></a><p class="muted">Diesen Link kann ein QR-Code am Arbeitsbereich öffnen. Im lokalen Prototyp bleibt der gespeicherte Verlauf jedoch auf diesem Gerät.</p></details>
 </section>
-<section id="Eintrag" hidden>
-  <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist vor Ort – und was passiert jetzt?</h1><p id="EintragId"></p>
+<section id="capture" hidden>
+  <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist vor Ort – und was passiert jetzt?</h1><p id="captureId"></p>
   <p class="lead">Dokumentiere Bestand, ausgeführte Arbeit, Material oder Ergebnis. Eine Menge ist optional; wähle die Einheit passend zum Gewerk.</p>
-  <fieldset id="EintragFields">
+  <fieldset id="captureFields">
     <label for="photo" class="camera-button">📷 Foto aufnehmen</label>
-    <input id="photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" Eintrag="environment">
+    <input id="photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
     <details class="camera-help"><summary>Kamera fehlt oder öffnet nicht?</summary><label for="photoFallback">Vorhandenes Foto auswählen</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
     <small>Foto aufnehmen oder auswählen. Technische Dateidetails findest du später unter den Nachweisdetails.</small>
     <p id="photoStatus" role="status"></p>
