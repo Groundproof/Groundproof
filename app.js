@@ -86,11 +86,18 @@ function render() {
     item.append(details);$('timeline').append(item);
   });
 }
+async function ensureDB() {
+  if(db) {
+    try { db.transaction(['identities'],'readonly'); return db; } catch {}
+  }
+  db=await openDB();
+  return db;
+}
 async function refresh() {
   const ticket=++refreshGeneration;
   healthy=false;$('captureStart').disabled=$('EintragAgain').disabled=true;
   try {
-    if(!db)throw new Error('Lokaler Speicher nicht bereit. Bitte Seite neu laden.');
+    await ensureDB();
     const loaded=await readLedger(db,physicalId);await verifyLedger(loaded,physicalId);
     if(ticket!==refreshGeneration)return;
     snapshot=loaded;healthy=true;
@@ -179,13 +186,14 @@ $('identityForm').addEventListener('submit',async event=>{
   message();show('asset');
   try { await refresh(); } catch(e) { message(friendlyError(e),'error'); }
 });
-$('registerForm').addEventListener('submit',event=>{
+$('registerForm').addEventListener('submit',async event=>{
   event.preventDefault();
   const name=$('registerName').value.trim(),company=$('registerCompany').value.trim(),role=$('registerRole').value.trim();
   if(!name||!company||!role||!$('registerConfirm').checked){message('Bitte alle Pflichtfelder ausfüllen und bestätigen.','error');return;}
   setProfile({name,company,role,createdAt:new Date().toISOString()});setAuthor({name,company});
   $('authorName').value=name;$('authorCompany').value=company;$('authorDisplay').textContent=`Dokumentiert von ${name} · ${company}`;
-  message('Profil eingerichtet. Du kannst GroundProof jetzt verwenden.','success');show(physicalId?'asset':'home');
+  message('Profil eingerichtet. Du kannst GroundProof jetzt verwenden.','success');
+  if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}else show('home');
 });
 async function init() {
   // Preserve old gp_proofs verbatim. Never parse, trust, or silently migrate old test records.
