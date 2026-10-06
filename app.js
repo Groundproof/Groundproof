@@ -30,7 +30,7 @@ function busy(value) {
 function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
-  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('eventType').value='updated';$('stageType').value='assess';updateGuidance();
+  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('stageType').value='assess';updateGuidance();
   $('preview').removeAttribute('src');$('preview').hidden=true;$('photoStatus').textContent='';$('saveBtn').disabled=true;
 }
 function revokeHistory() {for(const url of historyURLs)URL.revokeObjectURL(url);historyURLs=[];$('timeline').replaceChildren();}
@@ -123,12 +123,20 @@ async function saveProof() {
   } catch(e) {message(friendlyError(e),'error');}
   finally {busy(false);}
 }
-for(const [value,label] of Object.entries(CHANGES)) {const option=element('option',label);option.value=value;$('eventType').append(option);}
+const EVENT_BY_STAGE={
+  assess:{label:'Wie ist die Ausgangslage?',help:'Nur auswählen, wenn etwas Besonderes festgehalten werden soll.',options:[['updated','Ausgangslage festhalten'],['problem','Abweichung / Problem entdeckt']]},
+  count:{label:'Was passiert mit dem Material?',help:'Damit Bestand und spätere Verwendung nachvollziehbar bleiben.',options:[['updated','Bestand gezählt'],['added','Material angekommen / hinzugefügt'],['removed','Material verwendet / entnommen'],['problem','Abweichung / Problem entdeckt']]},
+  build:{label:'Wie ist der Stand der Arbeit?',help:'Wähle den tatsächlichen Arbeitsstand.',options:[['installed','Arbeit ausgeführt'],['updated','Zwischenstand festhalten'],['problem','Abweichung / Problem entdeckt']]},
+  yield:{label:'Wie ist das Ergebnis?',help:'Der Abschluss bleibt mit dem vorherigen Zustand verbunden.',options:[['installed','Arbeit fertig'],['updated','Teilweise fertig / Zwischenstand'],['problem','Mangel / Abweichung entdeckt']]}
+};
 function updateGuidance(){
-  const isCount=$('stageType').value==='count';
+  const stage=$('stageType').value,isCount=stage==='count';
   $('countPrompt').hidden=!isCount;$('optionalQty').hidden=isCount;
-  if(isCount){$('actualQty').required=true;$('actualUnit').required=true;}
-  else {$('actualQty').required=false;$('actualUnit').required=false;}
+  $('actualQty').required=isCount;$('actualUnit').required=isCount;
+  const cfg=EVENT_BY_STAGE[stage], select=$('eventType'), previous=select.value;
+  $('eventLabel').textContent=cfg.label;$('eventHelp').textContent=cfg.help;select.replaceChildren();
+  for(const [value,label] of cfg.options){const option=element('option',label);option.value=value;select.append(option);}
+  if(cfg.options.some(([v])=>v===previous))select.value=previous;
 }
 $('stageType').addEventListener('change',()=>{updateGuidance();confirmation();});
 $('eventType').addEventListener('change',confirmation);
