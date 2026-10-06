@@ -18,15 +18,15 @@
 <p id="legacy" class="notice" hidden></p>
 <section id="home">
   <div class="eyebrow">Einfacher Baustellen-Nachweis</div>
-  <h1>Zeige in Sekunden, was vor Ort geplant war, gemacht wurde und wie es jetzt aussieht.</h1>
-  <p class="lead">GroundProof verbindet Fotos, Arbeitsschritte und Abweichungen zu einem gemeinsamen Verlauf. Per QR-Code können beteiligte Firmen denselben Arbeitsbereich schnell öffnen und nachvollziehen – statt Fotos und Informationen über Chats, Ordner und Personen zusammensuchen zu müssen.</p>
+  <h1>Alle Beteiligten sehen, was an diesem Ort gemacht wurde – ohne Fotos, Chats und Notizen zusammensuchen zu müssen.</h1>
+  <p class="lead">GroundProof gibt jedem Arbeitsbereich auf der Baustelle einen QR-Code. Wer ihn scannt, sieht den bisherigen Verlauf und kann direkt ein neues Foto mit dem ausgeführten Arbeitsschritt hinzufügen. So sehen Bauleitung und beteiligte Firmen an einem Ort: Was war geplant? Was wurde vorgefunden? Was wurde gemacht? Welche Abweichung gab es? Wie sieht das Ergebnis aus?</p>
   <div class="journey" aria-label="GroundProof Ablauf">
     <div><b>1</b><span>Auftrag</span><small>Was ist geplant?</small></div>
     <div><b>2</b><span>Bestand</span><small>Was ist vor Ort?</small></div>
     <div><b>3</b><span>Ausführung</span><small>Was wurde gemacht?</small></div>
     <div><b>4</b><span>Ergebnis</span><small>Was ist entstanden?</small></div>
   </div>
-  <div class="value-card"><strong>Aus Baustellenfotos wird ein nachvollziehbarer Arbeitsverlauf.</strong><p>Beispiel: Ein Elektriker dokumentiert geplante Leitungswege, vorhandene Anschlüsse, verlegte Meter, Abweichungen und den fertigen Anschluss – alles beim selben Arbeitsbereich.</p></div>
+  <div class="value-card"><strong>Ein QR-Code wird zum gemeinsamen Bautagebuch für genau diesen Ort.</strong><p>Beispiel Elektro: QR-Code am Raum scannen → Foto der Ausgangslage → „Leitung 16,5 m verlegt“ → später Foto des fertigen Anschlusses. Der nächste Handwerker oder die Bauleitung sieht sofort, was hier passiert ist.</p></div>
   <form id="identityForm" class="card" method="get">
     <label for="identityInput">Projekt / Arbeitsbereich</label>
     <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="Musterprojekt-Wand-A" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
@@ -41,7 +41,7 @@
   <p class="lead">Hier entsteht der gemeinsame Verlauf dieses Arbeitsbereichs: Auftrag, Situation vor Ort, ausgeführte Arbeit, Abweichungen und Ergebnis.</p>
   <div class="insight-grid">
     <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
-    <article><small>Realität</small><strong id="actualSummary">Noch kein Capture</strong></article>
+    <article><small>Realität</small><strong id="actualSummary">Noch kein Eintrag</strong></article>
   </div>
   <div id="caseSetup" class="card">
     <h2>Was ist an diesem Ort geplant?</h2>
@@ -79,16 +79,16 @@
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
     <label for="stageType">Was dokumentierst du?</label><select id="stageType"><option value="assess">Auftrag / Soll</option><option value="count">Bestand vor Ort</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Ergebnis / Abschluss</option></select>
     <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
-    <details class="capture-options"><summary>Weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
+    <details class="Eintrag-options"><summary>Weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
     <div class="row">
       <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div>
       <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="m²"></div>
     </div>
     <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
-    <p id="confirmation" class="capture-confirmation"></p>
+    <p id="confirmation" class="Eintrag-confirmation"></p>
     <button id="saveBtn" type="button" disabled>Eintrag speichern</button>
   </fieldset>
-  <button id="cancelCapture" type="button" class="secondary">Abbrechen</button>
+  <button id="cancelEintrag" type="button" class="secondary">Abbrechen</button>
 </section>
 <section id="history" hidden>
   <div class="eyebrow">Soll / Ist</div><h1>Was ist wirklich passiert?</h1><p id="historyId"></p>
@@ -96,7 +96,7 @@
   <details class="integrity-box"><summary>Technische Prüfung</summary><p id="integrity" class="notice"></p></details>
   <ol id="timeline"></ol>
   <div id="outcome" class="outcome" hidden><small>Soll / Ist Vergleich</small><h2 id="outcomeTitle">Soll / Ist</h2><p id="outcomeText"></p><p class="muted">Nur aus bestätigten Angaben berechnet. GroundProof vermisst oder beurteilt die Arbeit in diesem Prototyp nicht automatisch.</p></div>
-  <button id="captureAgain">+ Nächsten Schritt erfassen</button>
+  <button id="EintragAgain">+ Nächsten Schritt erfassen</button>
   <button id="backAsset" class="secondary">Zurück zum Arbeitsbereich</button>
 </section>
 <details class="privacy"><summary>Rechtlicher und technischer Hinweis</summary><p>Die technische Prüfung schützt nur die lokale Konsistenz. Sie bestätigt weder Urheber, Aufnahmeort, Wahrheit der Angaben noch rechtliche Beweiskraft.</p></details>
