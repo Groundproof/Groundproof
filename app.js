@@ -7,7 +7,8 @@ const planKey=id=>'gp_plan_'+id;
 function getPlan(){try{return JSON.parse(localStorage.getItem(planKey(physicalId))||'null')}catch{return null}}
 function setPlan(plan){localStorage.setItem(planKey(physicalId),JSON.stringify(plan))}
 function quantityFrom(note=''){const m=note.match(/\[GPQ:([^:\]]+):([^\]]+)\]/);return m?{value:Number(m[1]),unit:m[2]}:null}
-function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').trim()}
+function stageFrom(note=''){return note.match(/\[GPS:(assess|count|build|yield)\]/)?.[1]||'assess'}
+function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(/\s*\[GPS:[^\]]+\]/,'').trim()}
 const navigation=['navHome','navAsset','navHistory','cancelCapture'];
 function message(text='',kind='') { $('message').textContent=text;$('message').className='notice '+kind;$('message').hidden=!text; }
 function show(id) {
@@ -25,7 +26,7 @@ function busy(value) {
 function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
-  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('eventType').value='updated';
+  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('eventType').value='updated';$('stageType').value='assess';
   $('preview').removeAttribute('src');$('preview').hidden=true;$('photoStatus').textContent='';$('saveBtn').disabled=true;
 }
 function revokeHistory() {for(const url of historyURLs)URL.revokeObjectURL(url);historyURLs=[];$('timeline').replaceChildren();}
@@ -39,7 +40,7 @@ function render() {
   $('lastTime').textContent=healthy && last?'Bestätigt laut Gerätezeit: '+formatTime(last.createdAt):'';
   $('captureCount').textContent=healthy?String(snapshot.entries.length):'—';
   $('lastChange').textContent=healthy && last?CHANGES[last.human.change]:'—';
-  const plan=getPlan();
+  const plan=getPlan(),stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'],labels=['Assess','Count','Build','Yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
   $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
   $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Capture';
   $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';
@@ -59,7 +60,7 @@ function render() {
     const item=element('li',undefined,'proof');
     item.append(element('time',`#${entry.sequence} · ${formatTime(entry.createdAt)} (Gerätezeit)`),element('h2',CHANGES[entry.human.change]),element('p','Bestätigter Zustand: '+entry.human.state,'state'));
     if(i)item.append(element('p','Vorher: '+snapshot.entries[i-1].human.state,'muted'));
-    const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
+    item.append(element('div',stageFrom(entry.human.note).toUpperCase(),'stage-badge'));const humanNote=cleanNote(entry.human.note);if(humanNote)item.append(element('p',humanNote,'state'));const q=quantityFrom(entry.human.note);if(q)item.append(element('p','Bestätigte Menge: '+q.value+' '+q.unit,'quantity'));
     const evidence=snapshot.evidence[i];
     const img=element('img',undefined,'preview');img.alt='Verkleinerte Ansicht · Capture '+entry.sequence;img.loading='lazy';
     const preview=URL.createObjectURL(evidence.preview);historyURLs.push(preview);img.src=preview;item.append(img);
@@ -110,7 +111,7 @@ async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
   busy(true);message('Proof wird lokal gespeichert …');
   try {
-    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}
+    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;
     const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
