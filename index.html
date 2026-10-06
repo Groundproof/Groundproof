@@ -13,13 +13,13 @@
 </head>
 <body><main class="app">
 <header><div class="brand">GroundProof</div><div class="tag">Prototype · lokal</div></header>
-<p class="notice">Lokaler Prototyp · Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p>
+<details class="privacy-top"><summary>Datenschutz dieses Prototyps</summary><p class="notice">Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p></details>
 <p id="message" role="status" aria-live="polite" hidden></p>
 <p id="legacy" class="notice" hidden></p>
 <section id="home">
-  <div class="eyebrow">Baustellen-Nachweis</div>
-  <h1>Vom geplanten Auftrag zum nachweisbaren Ergebnis.</h1>
-  <p class="lead">GroundProof hält fest, was an einem Bauteil, Raum oder Arbeitsbereich geplant war, was vorgefunden wurde, was ausgeführt wurde und welches Ergebnis entstanden ist. Fotos, Mengen, Arbeitsschritte und Abweichungen bleiben dabei am selben Ort nachvollziehbar.</p>
+  <div class="eyebrow">Einfacher Baustellen-Nachweis</div>
+  <h1>Zeige in Sekunden, was vor Ort geplant war, gemacht wurde und wie es jetzt aussieht.</h1>
+  <p class="lead">GroundProof verbindet Fotos, Arbeitsschritte und Abweichungen zu einem gemeinsamen Verlauf. Per QR-Code können beteiligte Firmen denselben Arbeitsbereich schnell öffnen und nachvollziehen – statt Fotos und Informationen über Chats, Ordner und Personen zusammensuchen zu müssen.</p>
   <div class="journey" aria-label="GroundProof Ablauf">
     <div><b>1</b><span>Auftrag</span><small>Was ist geplant?</small></div>
     <div><b>2</b><span>Bestand</span><small>Was ist vor Ort?</small></div>
@@ -28,10 +28,10 @@
   </div>
   <div class="value-card"><strong>Aus Baustellenfotos wird ein nachvollziehbarer Arbeitsverlauf.</strong><p>Beispiel: Ein Elektriker dokumentiert geplante Leitungswege, vorhandene Anschlüsse, verlegte Meter, Abweichungen und den fertigen Anschluss – alles beim selben Arbeitsbereich.</p></div>
   <form id="identityForm" class="card" method="get">
-    <label for="identityInput">Testfall öffnen</label>
-    <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="GP-WALL-001" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
-    <small id="idHelp">1–64 Zeichen: Buchstaben, Ziffern, - und _. Gross-/Kleinschreibung wird unterschieden.</small>
-    <button type="submit">Testfall starten <span aria-hidden="true">→</span></button>
+    <label for="identityInput">Projekt / Arbeitsbereich</label>
+    <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="Musterprojekt-Wand-A" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
+    <small id="idHelp">Zum Testen z. B. „Musterprojekt-Wand-A“. Später kann derselbe Arbeitsbereich direkt per QR-Code geöffnet werden.</small>
+    <button type="submit">Projekt öffnen <span aria-hidden="true">→</span></button>
   </form>
   <p class="muted">Im späteren Einsatz öffnet ein QR-Code genau diesen realen Ort, Gegenstand oder Materialposten. Für den Prototyp kannst du direkt mit dem Testfall starten.</p>
 </section>
@@ -71,10 +71,10 @@
   <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist vor Ort – und was passiert jetzt?</h1><p id="captureId"></p>
   <p class="lead">Dokumentiere Bestand, ausgeführte Arbeit, Material oder Ergebnis. Eine Menge ist optional; wähle die Einheit passend zum Gewerk.</p>
   <fieldset id="captureFields">
-    <label for="photo">Foto aufnehmen (Pflicht)</label>
-    <input id="photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
-    <details><summary>Kamera fehlt? Foto aus Dateien wählen</summary><label for="photoFallback">Vorhandenes Foto</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
-    <small>JPEG, PNG oder WebP · maximal 20 MiB / 48 Megapixel. Originaldatei bleibt erhalten; eine verkleinerte Ansicht wird zusätzlich erzeugt.</small>
+    <label for="photo" class="camera-button">📷 Foto aufnehmen</label>
+    <input id="photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+    <details class="camera-help"><summary>Kamera fehlt oder öffnet nicht?</summary><label for="photoFallback">Vorhandenes Foto auswählen</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
+    <small>Foto aufnehmen oder auswählen. Technische Dateidetails findest du später unter den Nachweisdetails.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
     <label for="stageType">Was dokumentierst du?</label><select id="stageType"><option value="assess">Auftrag / Soll</option><option value="count">Bestand vor Ort</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Ergebnis / Abschluss</option></select>
