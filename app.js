@@ -151,6 +151,7 @@ const EVENT_BY_STAGE={
 };
 function updateGuidance(){
   const stage=$('stageType').value,isCount=stage==='count';
+  $('stageChooser').hidden=isCount;$('eventBox').hidden=isCount;$('saveBtn').hidden=isCount;$('countConfirm').hidden=!isCount;
   $('countPrompt').hidden=!isCount;$('optionalQty').hidden=isCount;
   $('actualQty').required=isCount;$('actualUnit').required=isCount;
   const cfg=EVENT_BY_STAGE[stage], select=$('eventType'), previous=select.value;
@@ -164,6 +165,14 @@ for(const id of ['materialType','actualQty','actualUnit','note'])$(id).addEventL
 $('eventType').addEventListener('change',confirmation);
 $('actualQtyMirror').addEventListener('input',()=>{$('actualQty').value=$('actualQtyMirror').value;});
 $('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('actualUnitMirror').value;});
+$('countConfirm').addEventListener('click',()=>{
+  const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();
+  if(!q||!u){message('Bitte erkannte Menge und Einheit prüfen.','error');return;}
+  clearDraft();clearCapture();show('asset');
+  $('documentedView').textContent=`${q} ${u}`;
+  $('comparison').hidden=false;
+  message(`Menge bestätigt: ${q} ${u}. Das Analysefoto wurde nicht als Dokumentation gespeichert.`,'success');
+});
 function simulateVision(){
   const material='Rohre',n=18;$('materialType').value=material;$('materialSuggestion').textContent=material;
   $('countSuggestion').textContent=`≈ ${n} Stück`;$('countHint').textContent='Simulierter KI-Vorschlag aus dem Foto – bitte prüfen.';
