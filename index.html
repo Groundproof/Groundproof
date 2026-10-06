@@ -36,7 +36,7 @@
   <p class="muted">Im späteren Einsatz öffnet ein QR-Code genau diesen realen Ort, Gegenstand oder Materialposten. Für den Prototyp kannst du direkt mit dem Testfall starten.</p>
 </section>
 <section id="asset" hidden>
-  <div class="phase-strip" aria-label="Arbeitsablauf"><span class="active">Assess</span><span>Count</span><span>Build</span><span>Yield</span></div>
+  <div id="phaseStrip" class="phase-strip" aria-label="Arbeitsablauf"><span>Assess</span><span>Count</span><span>Build</span><span>Yield</span></div>
   <div class="eyebrow">Aktueller Testfall</div><h1 id="assetId"></h1>
   <p class="lead">Dokumentiere die reale Ausgangslage und führe denselben Fall später bis zum tatsächlichen Ergebnis weiter.</p>
   <div class="insight-grid">
@@ -77,6 +77,7 @@
     <small>JPEG, PNG oder WebP · maximal 20 MiB / 48 Megapixel. Originaldatei bleibt erhalten; eine verkleinerte Ansicht wird zusätzlich erzeugt.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
+    <label for="stageType">Wo bist du im Ablauf?</label><select id="stageType"><option value="assess">Assess · Ausgangslage</option><option value="count">Count · Bestand / Menge</option><option value="build">Build · Ausführung</option><option value="yield">Yield · Ergebnis</option></select>
     <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
     <div class="confidence"><span>GroundProof-Ausgabe</span><strong>Von dir bestätigt</strong><small>Dieser Prototyp erkennt Inhalte noch nicht automatisch. Angaben stammen von dir; das Foto bleibt als Original Evidence getrennt gespeichert.</small></div>
     <div class="row">
