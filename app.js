@@ -224,11 +224,11 @@ async function init() {
   try {
     physicalId=idFromURL(location.href);
     if(!globalThis.crypto?.subtle)throw new Error('Bitte diese App über HTTPS oder localhost öffnen. Sicheres Hashing ist hier nicht verfügbar.');
-    db=await openDB();
     const profile=getProfile();
     if(profile){$('authorName').value=profile.name||'';$('authorCompany').value=profile.company||'';$('authorDisplay').textContent=`Dokumentiert von ${profile.name} · ${profile.company}`;}
-    if(!profile){show('register');}
-    else if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}
+    if(!profile){show('register');return;}
+    db=await openDB();
+    if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}
     else show('home');
   } catch(e) {message(friendlyError(e),'error');}
 }
