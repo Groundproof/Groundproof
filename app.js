@@ -5,6 +5,9 @@ let prepared=null, captureStarted=0, generation=0, refreshGeneration=0, saving=f
 let previewURL=null, historyURLs=[];
 const planKey=id=>'gp_plan_'+id;
 const authorKey='gp_author_v1';
+const profileKey='gp_profile_v1';
+function getProfile(){try{return JSON.parse(localStorage.getItem(profileKey)||'null')}catch{return null}}
+function setProfile(v){localStorage.setItem(profileKey,JSON.stringify(v))}
 const draftKey=id=>'gp_draft_'+id;
 function getDraft(){try{return JSON.parse(localStorage.getItem(draftKey(physicalId))||'null')}catch{return null}}
 function setDraft(v){try{localStorage.setItem(draftKey(physicalId),JSON.stringify(v))}catch{}}
@@ -123,7 +126,7 @@ async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
   busy(true);message('Eintrag wird gespeichert …');
   try {
-    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();if($('stageType').value==='count'&&(!q||!u))throw new Error('Bitte Menge und Einheit für den Bestand angeben.');let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName)throw new Error('Bitte gib an, wer diesen Eintrag dokumentiert.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
+    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();if($('stageType').value==='count'&&(!q||!u))throw new Error('Bitte Menge und Einheit für den Bestand angeben.');let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName||!authorCompany)throw new Error('Dein Profil ist unvollständig. Bitte GroundProof neu öffnen und Profil vervollständigen.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
     const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');clearDraft();
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
@@ -180,6 +183,14 @@ $('identityForm').addEventListener('submit',async event=>{
   message();show('asset');
   try { await refresh(); } catch(e) { message(friendlyError(e),'error'); }
 });
+$('registerForm').addEventListener('submit',event=>{
+  event.preventDefault();
+  const name=$('registerName').value.trim(),company=$('registerCompany').value.trim(),role=$('registerRole').value.trim();
+  if(!name||!company||!role||!$('registerConfirm').checked){message('Bitte alle Pflichtfelder ausfüllen und bestätigen.','error');return;}
+  setProfile({name,company,role,createdAt:new Date().toISOString()});setAuthor({name,company});
+  $('authorName').value=name;$('authorCompany').value=company;$('authorDisplay').textContent=`Dokumentiert von ${name} · ${company}`;
+  message('Profil eingerichtet. Du kannst GroundProof jetzt verwenden.','success');show(physicalId?'asset':'home');
+});
 async function init() {
   // Preserve old gp_proofs verbatim. Never parse, trust, or silently migrate old test records.
   try {if(localStorage.getItem('gp_proofs')!==null){$('legacy').textContent='Alte V0.1-Testdaten vorhanden. Sie bleiben unverändert in gp_proofs und werden nicht in diesen neuen Ledger übernommen: separate Original-Hashes fehlen. Details zur Sicherung stehen in der README.';$('legacy').hidden=false;}}
@@ -188,8 +199,11 @@ async function init() {
     physicalId=idFromURL(location.href);
     if(!globalThis.crypto?.subtle)throw new Error('Bitte diese App über HTTPS oder localhost öffnen. Sicheres Hashing ist hier nicht verfügbar.');
     db=await openDB();
-    if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}
-    const savedAuthor=getAuthor();if(savedAuthor){$('authorName').value=savedAuthor.name||'';$('authorCompany').value=savedAuthor.company||'';}
+    const profile=getProfile();
+    if(profile){$('authorName').value=profile.name||'';$('authorCompany').value=profile.company||'';$('authorDisplay').textContent=`Dokumentiert von ${profile.name} · ${profile.company}`;}
+    if(!profile){show('register');}
+    else if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}
+    else show('home');
   } catch(e) {message(friendlyError(e),'error');}
 }
 window.addEventListener('pagehide',()=>{generation++;refreshGeneration++;if(previewURL)URL.revokeObjectURL(previewURL);revokeHistory();db?.close();});
