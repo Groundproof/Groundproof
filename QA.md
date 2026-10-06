@@ -1,4 +1,4 @@
-# V0.1 QA report · 2026-10-06
+# V0.2 QA report · 2026-10-06
 
 ## Review status
 
@@ -55,7 +55,20 @@ Follow README's real-iPhone sequence and run both browser engines before promoti
 
 ## Product risk
 
-The app adds human-labelled changes and a per-identity state/history. It does **not** derive quantities, correctness, quality, progress percentages, cost savings or economic decisions. A latest non-problem event does not independently resolve prior problems. Demonstrate a concrete decision/time benefit versus a named phone photo + timestamp before investing. Count/Build/Yield remain conceptual applications of one ledger, not implemented modules.
+V0.2 now exposes the intended lifecycle rather than asking testers to infer it from a photo ledger: expected scope/quantity → Assess → Count → Build → Yield → planned-vs-documented outcome. Stage and optional actual quantity are human-confirmed and attached to the same evidence history. The comparison is deliberately arithmetic, not AI-derived, and the UI says so.
+
+This is sufficient for a **concept/product-journey test**, not for a production claim. It still does **not** automatically infer quantities, correctness, quality, cost savings or completion from imagery. The critical validation remains whether this continuous expected-vs-physical-reality record changes a real decision or saves enough effort versus ordinary photos/forms. If testers only understand the value after verbal explanation, V0.2 fails.
+
+## V0.2 acceptance additions
+
+- Landing screen states the user outcome before Physical ID mechanics.
+- Assess / Count / Build / Yield are visible as one lifecycle and every capture records a lifecycle stage.
+- A case can hold expected scope and planned quantity locally.
+- A capture can hold a human-confirmed actual quantity and unit.
+- History visually identifies lifecycle stage and keeps Original Evidence separate.
+- Planned vs documented quantity produces a visible delta with an explicit human-confirmed/no-auto-measurement boundary.
+- No cloud AI, paid API, tracker or new runtime dependency was introduced.
+- Real mobile/browser execution remains the release gate; static/code review is not represented as device validation.
 
 ## Changes found and addressed during review
 
