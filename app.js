@@ -36,11 +36,11 @@ function render() {
   const last=snapshot.entries.at(-1);
   $('assetId').textContent=physicalId;$('historyId').textContent=physicalId;$('captureId').textContent=physicalId;
   $('lastState').textContent=healthy?(last?.human.state || 'Noch kein Zustand bestätigt'):'Nicht verfügbar – Prüfung fehlgeschlagen';
-  $('lastNote').textContent=healthy?(last?.human.note || ''):'';
+  $('lastNote').textContent=healthy?(cleanNote(last?.human.note || '')):'';
   $('lastTime').textContent=healthy && last?'Bestätigt laut Gerätezeit: '+formatTime(last.createdAt):'';
   $('captureCount').textContent=healthy?String(snapshot.entries.length):'—';
   $('lastChange').textContent=healthy && last?CHANGES[last.human.change]:'—';
-  const plan=getPlan(),stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'],labels=['Assess','Count','Build','Yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
+  const plan=getPlan(),stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
   $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
   $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Capture';
   $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';
