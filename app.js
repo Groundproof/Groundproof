@@ -5,6 +5,10 @@ let prepared=null, captureStarted=0, generation=0, refreshGeneration=0, saving=f
 let previewURL=null, historyURLs=[];
 const planKey=id=>'gp_plan_'+id;
 const authorKey='gp_author_v1';
+const draftKey=id=>'gp_draft_'+id;
+function getDraft(){try{return JSON.parse(localStorage.getItem(draftKey(physicalId))||'null')}catch{return null}}
+function setDraft(v){try{localStorage.setItem(draftKey(physicalId),JSON.stringify(v))}catch{}}
+function clearDraft(){try{localStorage.removeItem(draftKey(physicalId))}catch{}}
 function getAuthor(){try{return JSON.parse(localStorage.getItem(authorKey)||'null')}catch{return null}}
 function setAuthor(v){localStorage.setItem(authorKey,JSON.stringify(v))}
 function authorFrom(note=''){const m=note.match(/\[GPA:([^:\]]*)(?::([^\]]*))?\]/);return m?{name:decodeURIComponent(m[1]||''),company:decodeURIComponent(m[2]||'')}:null}
@@ -51,7 +55,10 @@ function render() {
   const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
-  $('captureStart').textContent=last?'Nächsten realen Schritt erfassen →':'Vor-Ort-Zustand dokumentieren →';
+  const nextStage=last?({assess:'count',count:'build',build:'yield',yield:'yield'}[stage]||'assess'):'assess';
+  const nextCopy={assess:['Ausgangslage festhalten','Dokumentiere zuerst die Situation vor Beginn der Arbeit.'],count:['Material / Bestand erfassen','Erfasse vorhandenes Material als zusätzlichen Schritt, bevor die Ausführung dokumentiert wird.'],build:['Ausführung dokumentieren','Halte fest, was tatsächlich ausgeführt wurde.'],yield:['Ergebnis festhalten','Dokumentiere den fertigen oder aktuellen Endstand.']}[nextStage];
+  const draft=getDraft();$('nextStepTitle').textContent=draft?'Offenen Eintrag fortsetzen':nextCopy[0];$('nextStepText').textContent=draft?'Du hast diesen Schritt bereits begonnen. Deine Angaben bleiben erhalten.':nextCopy[1];
+  $('captureStart').textContent=draft?'Offenen Eintrag fortsetzen →':(last?'Nächsten realen Schritt erfassen →':'Vor-Ort-Zustand dokumentieren →');
   const link=new URL(location.href);link.search='';link.hash='';link.searchParams.set('id',physicalId);
   $('identityLink').href=link.href;$('identityLink').textContent=link.href;
   $('captureStart').disabled=$('EintragAgain').disabled=!healthy;
@@ -92,7 +99,10 @@ async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
-  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';updateGuidance();confirmation();show('capture');
+  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'],draft=getDraft();
+  if(draft){$('stageType').value=draft.stage||'assess';$('materialType').value=draft.material||'';$('actualQty').value=draft.qty||'';$('actualUnit').value=draft.unit||'';$('note').value=draft.note||'';}
+  else if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';
+  updateGuidance();confirmation();show('capture');
 }
 async function choosePhoto(event) {
   const file=event.target.files?.[0];
@@ -114,7 +124,7 @@ async function saveProof() {
   busy(true);message('Eintrag wird gespeichert …');
   try {
     const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();if($('stageType').value==='count'&&(!q||!u))throw new Error('Bitte Menge und Einheit für den Bestand angeben.');let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName)throw new Error('Bitte gib an, wer diesen Eintrag dokumentiert.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
-    const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
+    const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');clearDraft();
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
     clearCapture();await refresh();show('asset');
@@ -138,7 +148,9 @@ function updateGuidance(){
   for(const [value,label] of cfg.options){const option=element('option',label);option.value=value;select.append(option);}
   if(cfg.options.some(([v])=>v===previous))select.value=previous;
 }
-$('stageType').addEventListener('change',()=>{updateGuidance();confirmation();});
+function persistDraft(){if(!physicalId)return;setDraft({stage:$('stageType').value,material:$('materialType').value,qty:$('actualQty').value,unit:$('actualUnit').value,note:$('note').value});}
+$('stageType').addEventListener('change',()=>{updateGuidance();persistDraft();confirmation();});
+for(const id of ['materialType','actualQty','actualUnit','note'])$(id).addEventListener('input',persistDraft);
 $('eventType').addEventListener('change',confirmation);
 $('actualQtyMirror').addEventListener('input',()=>{$('actualQty').value=$('actualQtyMirror').value;});
 $('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('actualUnitMirror').value;});
@@ -155,7 +167,7 @@ $('simulateCount').addEventListener('click',()=>{
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe kurz, was hier gemacht werden soll.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
-for(const id of ['captureStart','EintragAgain'])$(id).addEventListener('click',startCapture);
+for(const id of ['captureStart','EintragAgain','continueTask'])$(id).addEventListener('click',startCapture);
 for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
 $('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
