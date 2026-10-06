@@ -1,7 +1,7 @@
-import {CHANGES,idFromURL,validId,openDB,readLedger,verifyLedger,prepareEvidence,appendEintrag,stateFor,friendlyError} from './ledger.js';
+import {CHANGES,idFromURL,validId,openDB,readLedger,verifyLedger,prepareEvidence,appendCapture,stateFor,friendlyError} from './ledger.js';
 const $=id=>document.getElementById(id);
 let db, physicalId=null, snapshot={entries:[],evidence:[]}, healthy=false;
-let prepared=null, EintragStarted=0, generation=0, refreshGeneration=0, saving=false, processing=false;
+let prepared=null, captureStarted=0, generation=0, refreshGeneration=0, saving=false, processing=false;
 let previewURL=null, historyURLs=[];
 const planKey=id=>'gp_plan_'+id;
 function getPlan(){try{return JSON.parse(localStorage.getItem(planKey(physicalId))||'null')}catch{return null}}
@@ -9,7 +9,7 @@ function setPlan(plan){localStorage.setItem(planKey(physicalId),JSON.stringify(p
 function quantityFrom(note=''){const m=note.match(/\[GPQ:([^:\]]+):([^\]]+)\]/);return m?{value:Number(m[1]),unit:m[2]}:null}
 function stageFrom(note=''){return note.match(/\[GPS:(assess|count|build|yield)\]/)?.[1]||'assess'}
 function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(/\s*\[GPS:[^\]]+\]/,'').trim()}
-const navigation=['navHome','navAsset','navHistory','cancelEintrag'];
+const navigation=['navHome','navAsset','navHistory','cancelCapture'];
 function message(text='',kind='') { $('message').textContent=text;$('message').className='notice '+kind;$('message').hidden=!text; }
 function show(id) {
   for(const s of document.querySelectorAll('main section'))s.hidden=s.id!==id;
@@ -19,11 +19,11 @@ function show(id) {
   window.scrollTo(0,0);
 }
 function busy(value) {
-  saving=value;$('EintragFields').disabled=value;
-  for(const name of navigation)$(name).disabled=value || (name!=='navHome' && name!=='cancelEintrag' && !physicalId);
+  saving=value;$('captureFields').disabled=value;
+  for(const name of navigation)$(name).disabled=value || (name!=='navHome' && name!=='cancelCapture' && !physicalId);
   $('saveBtn').disabled=value || processing || !prepared || !healthy;
 }
-function clearEintrag() {
+function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
   $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('eventType').value='updated';$('stageType').value='assess';
@@ -84,9 +84,9 @@ async function refresh() {
   render();
 }
 function confirmation() {$('confirmation').textContent=prepared?'Foto bereit. Optional weitere Angaben ergänzen oder direkt speichern.':'Nimm zuerst ein Foto auf.';}
-async function startEintrag() {
+async function startCapture() {
   if(saving)return;
-  EintragStarted=performance.now();clearEintrag();message();
+  captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
   const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';confirmation();show('Eintrag');
 }
@@ -110,10 +110,10 @@ async function saveProof() {
   busy(true);message('Eintrag wird gespeichert …');
   try {
     const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;
-    const entry=await appendEintrag(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
+    const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
     // End timer only after the atomic IndexedDB transaction has committed.
-    const seconds=(performance.now()-EintragStarted)/1000;
-    clearEintrag();await refresh();show('asset');
+    const seconds=(performance.now()-captureStarted)/1000;
+    clearCapture();await refresh();show('asset');
     if(healthy)message(`Eintrag gespeichert · ${seconds.toFixed(1)} Sekunden. ${seconds<10?'Schneller Ablauf ✓':'Für den Schnellablauf noch zu langsam.'}`,'success');
     else message('Eintrag wurde gespeichert, aber die anschliessende Prüfung ist fehlgeschlagen. Bitte Seite neu laden.','error');
   } catch(e) {message(friendlyError(e),'error');}
@@ -124,10 +124,10 @@ $('eventType').addEventListener('change',confirmation);
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe den erwarteten Umfang oder gib eine geplante Menge an.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
-for(const id of ['EintragStart','EintragAgain'])$(id).addEventListener('click',startEintrag);
-for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearEintrag();message();show('asset');await refresh();});
-for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearEintrag();message();show('history');await refresh();});
-$('navHome').addEventListener('click',()=>{if(saving)return;clearEintrag();show('home');});
+for(const id of ['EintragStart','EintragAgain'])$(id).addEventListener('click',startCapture);
+for(const id of ['navAsset','backAsset','cancelCapture'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
+for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
+$('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
 $('identityForm').addEventListener('submit',event=>{
   event.preventDefault();const id=$('identityInput').value.trim();
   if(!validId(id)){message('Ungültige Physical ID.','error');return;}
