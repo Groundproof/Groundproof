@@ -185,12 +185,13 @@ $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{});
 for(const id of ['captureStart','EintragAgain','continueTask'])$(id).addEventListener('click',startCapture);
 $('assignmentPhoto').addEventListener('click',async()=>{
-  await startCapture();
+  if(saving)return;
+  captureStarted=performance.now();clearCapture();message();
+  await refresh();if(!healthy)return;
   $('stageType').value='count';
-  updateGuidance();
-  confirmation();
-  $('photoStatus').textContent='Foto aufnehmen: GroundProof simuliert daraus Material und Menge. Das Foto dient hier nur der Analyse.';
-  requestAnimationFrame(()=>$('photo').click());
+  updateGuidance();confirmation();show('capture');
+  $('photoStatus').textContent='Menge erkennen: Foto aufnehmen. Das Foto wird nur analysiert und nicht gespeichert.';
+  setTimeout(()=>$('photo').click(),150);
 });
 for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
