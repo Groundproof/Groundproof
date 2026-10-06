@@ -85,13 +85,7 @@
   <div class="eyebrow">Schneller Eintrag</div><h1>Foto machen. Kurz sagen, was zu sehen ist.</h1><p id="captureId"></p>
   <p class="lead">GroundProof führt dich danach nur durch Angaben, die für diesen Eintrag nützlich sind.</p>
   <fieldset id="captureFields">
-    <div id="authorBox" class="author-box">
-      <label for="authorName">Wer dokumentiert?</label>
-      <input id="authorName" maxlength="80" autocomplete="name" placeholder="Vorname Nachname" required>
-      <label for="authorCompany">Firma (optional)</label>
-      <input id="authorCompany" maxlength="100" autocomplete="organization" placeholder="z. B. Muster Elektro AG">
-      <small>Wird auf diesem Gerät für den nächsten Eintrag vorgemerkt.</small>
-    </div>
+    <div id="authorBox" class="author-box"><strong id="authorDisplay">Dokumentiert von deinem Profil</strong><small>Die Zuordnung kommt aus deinem eingerichteten Profil.</small><input id="authorName" type="hidden"><input id="authorCompany" type="hidden"></div>
     <label for="photo" class="camera-button">📷 Foto aufnehmen</label>
     <input id="photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
     <details class="camera-help"><summary>Kamera fehlt oder öffnet nicht?</summary><label for="photoFallback">Vorhandenes Foto auswählen</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
@@ -132,5 +126,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1153"></script>
+<script type="module" src="./app.js?v=1154"></script>
 </body></html>
