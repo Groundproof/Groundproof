@@ -37,7 +37,7 @@ function busy(value) {
 function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
-  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('materialType').value='';$('countSuggestion').textContent='—';$('countHint').textContent='Material angeben, dann simuliert GroundProof einen Vorschlag.';$('stageType').value='assess';updateGuidance();
+  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('materialType').value='';$('materialSuggestion').textContent='Noch nicht ausgewertet';$('countSuggestion').textContent='—';$('countHint').textContent='Nach dem Foto simuliert GroundProof automatisch Materialerkennung und Zählung.';$('stageType').value='assess';updateGuidance();
   $('preview').removeAttribute('src');$('preview').hidden=true;$('photoStatus').textContent='';$('saveBtn').disabled=true;
 }
 function revokeHistory() {for(const url of historyURLs)URL.revokeObjectURL(url);historyURLs=[];$('timeline').replaceChildren();}
@@ -118,7 +118,7 @@ async function choosePhoto(event) {
     const result=await prepareEvidence(file);
     if(ticket!==generation)return;
     prepared=result;previewURL=URL.createObjectURL(result.preview);$('preview').src=previewURL;$('preview').hidden=false;
-    $('photoStatus').textContent='Foto bereit ✓';confirmation();
+    $('photoStatus').textContent='Foto bereit ✓';if($('stageType').value==='count')simulateVision();confirmation();
   } catch(e) {if(ticket===generation){$('photoStatus').textContent='Kein Foto bereit.';message(friendlyError(e),'error');}}
   finally {if(ticket===generation){processing=false;$('saveBtn').disabled=!prepared || !healthy || saving;}}
 }
@@ -157,16 +157,12 @@ for(const id of ['materialType','actualQty','actualUnit','note'])$(id).addEventL
 $('eventType').addEventListener('change',confirmation);
 $('actualQtyMirror').addEventListener('input',()=>{$('actualQty').value=$('actualQtyMirror').value;});
 $('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('actualUnitMirror').value;});
-$('simulateCount').addEventListener('click',()=>{
-  const material=$('materialType').value.trim();
-  if(!material){message('Gib für die Simulation zuerst an, welches Material auf dem Foto zu sehen ist.','error');return;}
-  const suggestions={'rohre':18,'rohr':18,'kabelrollen':8,'kabelrolle':8,'platten':12,'platte':12};
-  const n=suggestions[material.toLocaleLowerCase('de-CH')] ?? 10;
-  $('countSuggestion').textContent=`≈ ${n} Stück`;
-  $('countHint').textContent=`${material}: simulierter Erkennungsvorschlag – bitte am Foto prüfen.`;
-  $('actualQty').value=String(n);$('actualUnit').value='Stk.';
-  message('Simulierter Vorschlag erstellt. Bitte Menge prüfen und bestätigen.','success');
-});
+function simulateVision(){
+  const material='Rohre',n=18;$('materialType').value=material;$('materialSuggestion').textContent=material;
+  $('countSuggestion').textContent=`≈ ${n} Stück`;$('countHint').textContent='Simulierter KI-Vorschlag aus dem Foto – bitte prüfen.';
+  $('actualQty').value=String(n);$('actualUnit').value='Stk.';persistDraft();
+}
+$('simulateCount').addEventListener('click',()=>{if(!prepared){message('Nimm zuerst ein Foto auf.','error');return;}simulateVision();message('Foto-Auswertung simuliert. Bitte Erkennung und Menge prüfen.','success');});
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{});
