@@ -13,7 +13,7 @@ function setPlan(plan){localStorage.setItem(planKey(physicalId),JSON.stringify(p
 function quantityFrom(note=''){const m=note.match(/\[GPQ:([^:\]]+):([^\]]+)\]/);return m?{value:Number(m[1]),unit:m[2]}:null}
 function stageFrom(note=''){return note.match(/\[GPS:(assess|count|build|yield)\]/)?.[1]||'assess'}
 function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(/\s*\[GPS:[^\]]+\]/,'').replace(/\s*\[GPA:[^\]]+\]/,'').trim()}
-const navigation=['navHome','navAsset','navHistory','cancelCapture'];
+const navigation=['navHome','navAsset','navHistory','cancelEintrag'];
 function message(text='',kind='') { $('message').textContent=text;$('message').className='notice '+kind;$('message').hidden=!text; }
 function show(id) {
   for(const s of document.querySelectorAll('main section'))s.hidden=s.id!==id;
@@ -24,7 +24,7 @@ function show(id) {
 }
 function busy(value) {
   saving=value;$('captureFields').disabled=value;
-  for(const name of navigation)$(name).disabled=value || (name!=='navHome' && name!=='cancelCapture' && !physicalId);
+  for(const name of navigation)$(name).disabled=value || (name!=='navHome' && name!=='cancelEintrag' && !physicalId);
   $('saveBtn').disabled=value || processing || !prepared || !healthy;
 }
 function clearCapture() {
@@ -129,7 +129,7 @@ $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventLis
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe kurz, was hier gemacht werden soll.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
 for(const id of ['captureStart','EintragAgain'])$(id).addEventListener('click',startCapture);
-for(const id of ['navAsset','backAsset','cancelCapture'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
+for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
 $('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
 $('identityForm').addEventListener('submit',async event=>{
@@ -149,6 +149,7 @@ async function init() {
     if(!globalThis.crypto?.subtle)throw new Error('Bitte diese App über HTTPS oder localhost öffnen. Sicheres Hashing ist hier nicht verfügbar.');
     db=await openDB();
     if(physicalId){$('identityInput').value=physicalId;show('asset');await refresh();}
+    const savedAuthor=getAuthor();if(savedAuthor){$('authorName').value=savedAuthor.name||'';$('authorCompany').value=savedAuthor.company||'';}
   } catch(e) {message(friendlyError(e),'error');}
 }
 window.addEventListener('pagehide',()=>{generation++;refreshGeneration++;if(previewURL)URL.revokeObjectURL(previewURL);revokeHistory();db?.close();});
