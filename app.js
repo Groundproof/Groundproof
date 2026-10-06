@@ -38,11 +38,11 @@ function element(tag,text,className) {const el=document.createElement(tag);if(te
 function formatTime(value) {return new Date(value).toLocaleString('de-CH');}
 function render() {
   const last=snapshot.entries.at(-1);
-  $('assetId').textContent=physicalId;$('historyId').textContent=physicalId;$('EintragId').textContent=physicalId;
+  $('assetId').textContent=physicalId;$('historyId').textContent=physicalId;$('captureId').textContent=physicalId;
   $('lastState').textContent=healthy?(last?.human.state || 'Noch kein Zustand bestätigt'):'Nicht verfügbar – Prüfung fehlgeschlagen';
   $('lastNote').textContent=healthy?(cleanNote(last?.human.note || '')):'';
   $('lastTime').textContent=healthy && last?'Bestätigt laut Gerätezeit: '+formatTime(last.createdAt):'';
-  $('EintragCount').textContent=healthy?String(snapshot.entries.length):'—';
+  $('captureCount').textContent=healthy?String(snapshot.entries.length):'—';
   $('lastChange').textContent=healthy && last?CHANGES[last.human.change]:'—';
   const plan=getPlan(),stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
   $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
@@ -51,10 +51,10 @@ function render() {
   const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
-  $('EintragStart').textContent=last?'Nächsten realen Schritt erfassen →':'Vor-Ort-Zustand dokumentieren →';
+  $('captureStart').textContent=last?'Nächsten realen Schritt erfassen →':'Vor-Ort-Zustand dokumentieren →';
   const link=new URL(location.href);link.search='';link.hash='';link.searchParams.set('id',physicalId);
   $('identityLink').href=link.href;$('identityLink').textContent=link.href;
-  $('EintragStart').disabled=$('EintragAgain').disabled=!healthy;
+  $('captureStart').disabled=$('EintragAgain').disabled=!healthy;
   $('navAsset').disabled=$('navHistory').disabled=!physicalId;
   revokeHistory();
   $('integrity').textContent=healthy?(last?'Lokale Prüfung bestanden: Originaldateien, verkleinerte Ansichten und Hash-Kette stimmen überein. Keine externe Beglaubigung.':'Noch keine Ledger-Einträge vorhanden.'):'Lokale Prüfung fehlgeschlagen. Die History wird nicht als bestätigter Verlauf angezeigt.';
@@ -78,7 +78,7 @@ function render() {
 }
 async function refresh() {
   const ticket=++refreshGeneration;
-  healthy=false;$('EintragStart').disabled=$('EintragAgain').disabled=true;
+  healthy=false;$('captureStart').disabled=$('EintragAgain').disabled=true;
   try {
     if(!db)throw new Error('Lokaler Speicher nicht bereit. Bitte Seite neu laden.');
     const loaded=await readLedger(db,physicalId);await verifyLedger(loaded,physicalId);
@@ -128,7 +128,7 @@ $('eventType').addEventListener('change',confirmation);
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe kurz, was hier gemacht werden soll.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
-for(const id of ['EintragStart','EintragAgain'])$(id).addEventListener('click',startCapture);
+for(const id of ['captureStart','EintragAgain'])$(id).addEventListener('click',startCapture);
 for(const id of ['navAsset','backAsset','cancelCapture'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
 $('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
