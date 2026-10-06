@@ -30,7 +30,7 @@ function busy(value) {
 function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
-  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('stageType').value='assess';updateGuidance();
+  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('materialType').value='';$('countSuggestion').textContent='—';$('countHint').textContent='Material angeben, dann simuliert GroundProof einen Vorschlag.';$('stageType').value='assess';updateGuidance();
   $('preview').removeAttribute('src');$('preview').hidden=true;$('photoStatus').textContent='';$('saveBtn').disabled=true;
 }
 function revokeHistory() {for(const url of historyURLs)URL.revokeObjectURL(url);historyURLs=[];$('timeline').replaceChildren();}
@@ -142,6 +142,16 @@ $('stageType').addEventListener('change',()=>{updateGuidance();confirmation();})
 $('eventType').addEventListener('change',confirmation);
 $('actualQtyMirror').addEventListener('input',()=>{$('actualQty').value=$('actualQtyMirror').value;});
 $('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('actualUnitMirror').value;});
+$('simulateCount').addEventListener('click',()=>{
+  const material=$('materialType').value.trim();
+  if(!material){message('Gib für die Simulation zuerst an, welches Material auf dem Foto zu sehen ist.','error');return;}
+  const suggestions={'rohre':18,'rohr':18,'kabelrollen':8,'kabelrolle':8,'platten':12,'platte':12};
+  const n=suggestions[material.toLocaleLowerCase('de-CH')] ?? 10;
+  $('countSuggestion').textContent=`≈ ${n} Stück`;
+  $('countHint').textContent=`${material}: simulierter Erkennungsvorschlag – bitte am Foto prüfen.`;
+  $('actualQty').value=String(n);$('actualUnit').value='Stk.';
+  message('Simulierter Vorschlag erstellt. Bitte Menge prüfen und bestätigen.','success');
+});
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe kurz, was hier gemacht werden soll.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
