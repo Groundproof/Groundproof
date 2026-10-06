@@ -194,9 +194,9 @@ $('assignmentPhoto').addEventListener('click',async()=>{
 });
 for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
-$('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
+$('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show(getProfile()?'home':'register');});
 $('identityForm').addEventListener('submit',async event=>{
-  event.preventDefault();const id=$('identityInput').value.trim();
+  event.preventDefault();if(!getProfile()){show('register');message('Bitte zuerst dein Profil einrichten.','error');return;}const id=$('identityInput').value.trim();
   if(!validId(id)){message('Ungültige ID. Bitte nur Buchstaben, Zahlen, _ oder - verwenden.','error');return;}
   physicalId=id;
   const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('id',id);
