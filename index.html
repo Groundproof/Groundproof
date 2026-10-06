@@ -96,8 +96,15 @@
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
     <label for="stageType">Was hältst du gerade fest?</label><select id="stageType"><option value="assess">Ausgangslage / vor der Arbeit</option><option value="count">Material oder Bestand</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Fertiges Ergebnis</option></select>
     <div id="countPrompt" class="guided-count" hidden>
-      <strong>Wie viel ist vorhanden?</strong><small>Trage die sichtbare oder von dir geprüfte Menge ein.</small>
-      <div class="row"><div><label for="actualQty">Menge</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 8"></div><div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="Stk., m, m² …"></div></div>
+      <div class="sim-badge">SIMULIERTE FOTO-AUSWERTUNG</div>
+      <strong>GroundProof würde jetzt das Material im Foto erkennen.</strong>
+      <small>Im kostenlosen Prototyp gibst du das erkannte Material einmal selbst an. So testen wir den späteren KI-Ablauf, ohne automatische Erkennung vorzutäuschen.</small>
+      <label for="materialType">Was wurde erkannt?</label>
+      <input id="materialType" maxlength="80" placeholder="z. B. Rohre">
+      <div class="sim-result"><span>Vorgeschlagene Menge</span><strong id="countSuggestion">—</strong><small id="countHint">Material angeben, dann simuliert GroundProof einen Vorschlag.</small></div>
+      <button id="simulateCount" type="button" class="secondary">Foto-Auswertung simulieren</button>
+      <div class="row"><div><label for="actualQty">Bestätigte Menge</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 18"></div><div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="z. B. Stk."></div></div>
+      <small>Du bestätigst oder korrigierst den Vorschlag. Nur deine bestätigte Menge wird als Angabe gespeichert.</small>
     </div>
     <div id="eventBox" class="guided-event"><label for="eventType" id="eventLabel">Was trifft zu?</label><select id="eventType"></select><small id="eventHelp"></small></div>
     <details class="Eintrag-options"><summary>Notiz oder weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
@@ -121,5 +128,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1151"></script>
+<script type="module" src="./app.js?v=1152"></script>
 </body></html>
