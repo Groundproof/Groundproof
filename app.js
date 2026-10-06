@@ -26,7 +26,7 @@ function cleanNote(note=''){return note.replace(/\s*\[GPQ:[^\]]+\]/,'').replace(
 const navigation=['navHome','navAsset','navHistory','cancelEintrag'];
 function message(text='',kind='') { $('message').textContent=text;$('message').className='notice '+kind;$('message').hidden=!text; }
 function show(id) {
-  for(const s of document.querySelectorAll('main section'))s.hidden=s.id!==id;
+  for(const s of document.querySelectorAll('main > section'))s.hidden=s.id!==id;
   for(const [nav,section] of [['navHome','home'],['navAsset','asset'],['navHistory','history']]) {
     if(id===section)$(nav).setAttribute('aria-current','page');else $(nav).removeAttribute('aria-current');
   }
