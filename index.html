@@ -4,94 +4,69 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111827">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>GroundProof V0.1</title>
-<style>
-:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#111827;background:#f3f4f6}
-*{box-sizing:border-box} body{margin:0}.app{max-width:560px;margin:auto;min-height:100vh;background:#fff;padding:18px 18px 90px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.brand{font-weight:800;font-size:20px}.tag{font-size:12px;background:#e5e7eb;padding:5px 8px;border-radius:999px}
-.card{border:1px solid #e5e7eb;border-radius:16px;padding:16px;margin:12px 0}.muted{color:#6b7280;font-size:14px}.big{font-size:25px;font-weight:800;margin:4px 0 8px}
-button,.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px 16px;font-size:16px;font-weight:700;margin:10px 0;background:#111827;color:white;text-align:center;text-decoration:none}
-.secondary{background:#f3f4f6;color:#111827}.danger{background:#7f1d1d}.hidden{display:none}
-input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;margin:6px 0 12px}
-label{font-size:13px;font-weight:700}.proof{border-left:3px solid #111827;padding-left:12px;margin:16px 0}.proof time{font-size:12px;color:#6b7280}
-img.preview{width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin:8px 0}
-.status{display:inline-block;background:#dcfce7;color:#166534;font-weight:700;font-size:12px;padding:5px 8px;border-radius:999px}
-nav{position:fixed;bottom:0;left:0;right:0;max-width:560px;margin:auto;background:white;border-top:1px solid #e5e7eb;padding:10px 18px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px}
-nav button{margin:0;padding:10px;font-size:13px}.hash{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all;background:#f9fafb;padding:8px;border-radius:8px}
-</style>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<script type="module" src="app.js"></script>
 </head>
 <body><main class="app">
-<header><div class="brand">GroundProof</div><div class="tag">V0.1 · local prototype</div></header>
-
+<header><div class="brand">GroundProof</div><div class="tag">V0.1 · lokal</div></header>
+<p class="notice">Physical Evidence / Material Ledger · Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p>
+<p id="message" role="status" aria-live="polite" hidden></p>
+<p id="legacy" class="notice" hidden></p>
 <section id="home">
+  <h1>Ein Objekt. Ein Verlauf.</h1>
+  <p>Ein Bauteil, Material oder Ort erhält eine feste Physical ID. Jeder bestätigte Capture ergänzt dessen Zustands- und Änderungsverlauf.</p>
+  <form id="identityForm" class="card" method="get">
+    <label for="identityInput">Physical ID öffnen</label>
+    <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="GP-WALL-001" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
+    <small id="idHelp">1–64 Zeichen: Buchstaben, Ziffern, - und _. Gross-/Kleinschreibung wird unterschieden.</small>
+    <button type="submit">Physical ID öffnen</button>
+  </form>
+  <p class="muted">Ein QR-Code kann direkt auf den Link einer Physical ID zeigen. Kein zusätzlicher Scan in der App erforderlich.</p>
+</section>
+<section id="asset" hidden>
+  <div class="muted">Physical Identity</div><h1 id="assetId"></h1>
+  <p class="muted">Die ID ordnet Captures zu. Die App überprüft nicht, welches reale Objekt du fotografierst.</p>
   <div class="card">
-    <div class="muted">Physical Material Ledger</div>
-    <div class="big">Physical proof, tied to place.</div>
-    <p>Dieser Prototyp speichert Proofs nur lokal auf diesem Gerät. Keine Daten werden hochgeladen.</p>
-    <button onclick="openAsset()">Demo-QR / Objekt öffnen</button>
+    <div class="muted">Letzter bestätigter Zustand</div><h2 id="lastState" class="state"></h2>
+    <p id="lastNote" class="state"></p><time id="lastTime"></time>
+    <p><b id="captureCount">0</b> Evidence Captures</p>
+    <p>Letzter Change: <strong id="lastChange">—</strong></p>
   </div>
-  <div class="card"><b>Testobjekt</b><p class="muted">GP-WALL-001 · Wand A · Demo-Baustelle</p><div id="homeCount"></div></div>
+  <button id="captureStart">+ Foto &amp; Change erfassen</button>
+  <button id="historyOpen" class="secondary">Vollständige History</button>
+  <details class="card"><summary>Link / QR-Ziel dieser Physical ID</summary><a id="identityLink" class="identity-link"></a><p class="muted">Den Link als QR-Ziel verwenden und am Objekt anbringen. Auf einem anderen Gerät öffnet sich dieselbe ID, aber nicht die hier lokal gespeicherte History.</p></details>
 </section>
-
-<section id="asset" class="hidden">
-  <div class="muted">Objekt-ID</div><div class="big">GP-WALL-001</div>
-  <div class="status">IDENTIFIZIERT</div>
-  <div class="card"><b>Wand A</b><p class="muted">Demo-Baustelle · EG · Raum 01</p></div>
-  <button onclick="showCapture()">+ Proof erfassen</button>
-  <button class="secondary" onclick="showHistory()">History ansehen</button>
+<section id="capture" hidden>
+  <h1>Capture bestätigen</h1><p id="captureId"></p>
+  <p class="muted">Foto → Change wählen → bestätigen. Ziel: unter 10 Sekunden; die tatsächliche Zeit wird gemessen.</p>
+  <fieldset id="captureFields">
+    <label for="photo">Foto aufnehmen (Pflicht)</label>
+    <input id="photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+    <details><summary>Kamera fehlt? Foto aus Dateien wählen</summary><label for="photoFallback">Vorhandenes Foto</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
+    <small>JPEG, PNG oder WebP · maximal 20 MiB / 48 Megapixel. Originaldatei bleibt erhalten; eine verkleinerte Ansicht wird zusätzlich erzeugt.</small>
+    <p id="photoStatus" role="status"></p>
+    <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
+    <label for="eventType">Was hat sich verändert?</label><select id="eventType"></select>
+    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Dämmung montiert; Anschluss links noch offen"></textarea>
+    <p id="confirmation" class="notice"></p>
+    <button id="saveBtn" type="button" disabled>Angaben bestätigen &amp; Proof speichern</button>
+  </fieldset>
+  <button id="cancelCapture" type="button" class="secondary">Abbrechen</button>
 </section>
-
-<section id="capture" class="hidden">
-  <div class="big">Proof erfassen</div>
-  <label>Status</label>
-  <select id="eventType"><option>Delivered</option><option>Verified</option><option selected>Installed</option><option>Consumed</option><option>Remaining</option></select>
-  <label>Foto</label>
-  <input id="photo" type="file" accept="image/*" capture="environment">
-  <img id="preview" class="preview hidden" alt="Vorschau">
-  <label>Notiz (optional)</label>
-  <textarea id="note" rows="3" placeholder="z. B. Dämmung montiert, Sichtprüfung OK"></textarea>
-  <button id="saveBtn" onclick="saveProof()">Proof erstellen</button>
-  <button class="secondary" onclick="openAsset()">Abbrechen</button>
+<section id="history" hidden>
+  <h1>History</h1><p id="historyId"></p>
+  <p class="muted">Chronologisch: ältester → neuester Capture. Jeder Eintrag bestätigt einen Zustand und dokumentiert einen Change derselben Physical ID.</p>
+  <p id="integrity" class="notice"></p>
+  <ol id="timeline"></ol>
+  <button id="captureAgain">+ Neuer Capture</button>
+  <button id="backAsset" class="secondary">Zurück zur Physical ID</button>
 </section>
-
-<section id="history" class="hidden">
-  <div class="big">Proof History</div>
-  <p class="muted">GP-WALL-001 · append-only Demo-Timeline</p>
-  <div id="timeline"></div>
-  <button onclick="showCapture()">+ Neuer Proof</button>
-  <button class="secondary" onclick="openAsset()">Zurück zum Objekt</button>
-  <button class="danger" onclick="resetDemo()">Demo zurücksetzen</button>
-</section>
-
+<p class="privacy">Hashing ist ein Integrity/Provenance Mechanism für lokale Datenkonsistenz. Es belegt weder Urheber, Aufnahmezeit, Ort noch Wahrheit der Angaben und verleiht keine rechtliche Beweiskraft. Wer Browserdaten kontrolliert, kann die gesamte Kette neu berechnen oder löschen.</p>
+<noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
-<nav><button onclick="show('home')" class="secondary">Start</button><button onclick="openAsset()" class="secondary">Objekt</button><button onclick="showHistory()" class="secondary">History</button></nav>
-<script>
-const ASSET='GP-WALL-001';
-let photoData=null;
-function show(id){for(const s of document.querySelectorAll('main section'))s.classList.add('hidden');document.getElementById(id).classList.remove('hidden');refreshCount()}
-function openAsset(){show('asset')}
-function showCapture(){show('capture')}
-function getProofs(){try{return JSON.parse(localStorage.getItem('gp_proofs')||'[]')}catch{return []}}
-function refreshCount(){const n=getProofs().length;document.getElementById('homeCount').innerHTML=`<b>${n}</b> gespeicherte Proof${n===1?'':'s'} auf diesem Gerät`}
-document.getElementById('photo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{photoData=r.result;const p=document.getElementById('preview');p.src=photoData;p.classList.remove('hidden')};r.readAsDataURL(f)})
-async function digest(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-async function saveProof(){
- const type=document.getElementById('eventType').value,note=document.getElementById('note').value.trim();
- if(!photoData){alert('Für V0.1 ist ein Foto Pflicht.');return}
- const proofs=getProofs(), createdAt=new Date().toISOString(), previousHash=proofs.length?proofs[0].hash:'GENESIS';
- const payload=JSON.stringify({assetId:ASSET,type,note,createdAt,previousHash,photoData});
- const hash=await digest(payload);
- proofs.unshift({assetId:ASSET,type,note,createdAt,previousHash,hash,photoData});
- localStorage.setItem('gp_proofs',JSON.stringify(proofs));
- photoData=null;document.getElementById('photo').value='';document.getElementById('note').value='';document.getElementById('preview').classList.add('hidden');
- showHistory();
-}
-function showHistory(){
- const ps=getProofs(), el=document.getElementById('timeline');
- el.innerHTML=ps.length?ps.map(p=>`<div class="proof"><time>${new Date(p.createdAt).toLocaleString()}</time><h3>${p.type}</h3>${p.photoData?`<img class="preview" src="${p.photoData}">`:''}${p.note?`<p>${esc(p.note)}</p>`:''}<div class="muted">SHA-256 proof hash</div><div class="hash">${p.hash}</div><div class="muted">Previous: ${p.previousHash}</div></div>`).join(''):'<div class="card">Noch kein Proof vorhanden.</div>';
- show('history')
-}
-function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-function resetDemo(){if(confirm('Lokale Demo-Proofs löschen?')){localStorage.removeItem('gp_proofs');showHistory()}}
-refreshCount();
-</script></body></html>
+<nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Physical ID</button><button id="navHistory" class="secondary" disabled>History</button></nav>
+</body></html>
