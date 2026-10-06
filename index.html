@@ -43,16 +43,18 @@
     <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
     <article><small>Realität</small><strong id="actualSummary">Noch kein Eintrag</strong></article>
   </div>
-  <div id="caseSetup" class="card">
-    <h2>Was ist an diesem Ort geplant?</h2>
-    <p class="muted">Beschreibe den Auftrag oder Soll-Zustand. Mengen sind optional und können in der passenden Einheit erfasst werden – z. B. m, m², Stück, kg, Liter oder Stunden.</p>
-    <label for="scopeInput">Erwarteter Umfang</label>
-    <textarea id="scopeInput" rows="2" maxlength="280" placeholder="z. B. Leitung vom Verteiler bis Steckdose verlegen"></textarea>
-    <div class="row">
-      <div><label for="plannedQty">Geplante Menge (optional)</label><input id="plannedQty" type="number" inputmode="decimal" min="0" step="any" placeholder="18"></div>
-      <div><label for="qtyUnit">Einheit</label><input id="qtyUnit" maxlength="12" placeholder="m, m², Stk."></div>
-    </div>
-    <button id="savePlan" type="button" class="secondary">Auftrag / Soll festhalten</button>
+  <div id="caseSetup" class="card setup-simple">
+    <h2>Was soll hier gemacht werden?</h2>
+    <p class="muted">Beschreibe den Auftrag kurz. Ein Foto und Details kannst du direkt beim ersten Eintrag ergänzen.</p>
+    <label for="scopeInput">Auftrag / gewünschtes Ergebnis</label>
+    <textarea id="scopeInput" rows="2" maxlength="280" placeholder="z. B. Neue Steckdose neben der Tür installieren"></textarea>
+    <details class="plan-details"><summary>Menge oder weitere Angaben hinzufügen</summary>
+      <div class="row">
+        <div><label for="plannedQty">Menge (optional)</label><input id="plannedQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 2"></div>
+        <div><label for="qtyUnit">Einheit</label><input id="qtyUnit" maxlength="12" placeholder="Stk., m, m² …"></div>
+      </div>
+    </details>
+    <button id="savePlan" type="button" class="secondary">Auftrag speichern</button>
   </div>
   <div id="comparison" class="comparison" hidden>
     <div><small>Geplant</small><strong id="plannedView">—</strong></div><div aria-hidden="true">→</div><div><small>Dokumentiert</small><strong id="documentedView">—</strong></div>
@@ -68,8 +70,8 @@
   <details class="card"><summary>QR-Link für diesen Arbeitsbereich</summary><a id="identityLink" class="identity-link"></a><p class="muted">Diesen Link kann ein QR-Code am Arbeitsbereich öffnen. Im lokalen Prototyp bleibt der gespeicherte Verlauf jedoch auf diesem Gerät.</p></details>
 </section>
 <section id="capture" hidden>
-  <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist vor Ort – und was passiert jetzt?</h1><p id="captureId"></p>
-  <p class="lead">Dokumentiere Bestand, ausgeführte Arbeit, Material oder Ergebnis. Eine Menge ist optional; wähle die Einheit passend zum Gewerk.</p>
+  <div class="eyebrow">Schneller Eintrag</div><h1>Foto machen. Kurz sagen, was zu sehen ist.</h1><p id="captureId"></p>
+  <p class="lead">GroundProof führt dich danach nur durch Angaben, die für diesen Eintrag nützlich sind.</p>
   <fieldset id="captureFields">
     <label for="photo" class="camera-button">📷 Foto aufnehmen</label>
     <input id="photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
@@ -77,12 +79,12 @@
     <small>Foto aufnehmen oder auswählen. Technische Dateidetails findest du später unter den Nachweisdetails.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
-    <label for="stageType">Was dokumentierst du?</label><select id="stageType"><option value="assess">Auftrag / Soll</option><option value="count">Bestand vor Ort</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Ergebnis / Abschluss</option></select>
-    <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
+    <label for="stageType">Was zeigt das Foto?</label><select id="stageType"><option value="assess">Ausgangslage / vor der Arbeit</option><option value="count">Vorhandenes Material / Bestand</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Fertiges Ergebnis</option></select>
+    <label for="eventType">Was hat sich verändert?</label><select id="eventType"></select>
     <details class="Eintrag-options"><summary>Weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
     <div class="row">
       <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div>
-      <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="m²"></div>
+      <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="Stk., m, m² …"></div>
     </div>
     <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
     <p id="confirmation" class="Eintrag-confirmation"></p>
