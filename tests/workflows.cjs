@@ -37,7 +37,8 @@ const base=process.env.GP_TEST_URL||'http://127.0.0.1:8765/';
  await page.locator('#countConfirm').click();
  await page.locator('#asset').waitFor({state:'visible'});
  assert.match(await page.locator('#documentedView').textContent(),/18/);
- console.log('PASS Menge per Foto -> Simulation -> Bestätigung -> Foto verworfen');
+ await page.reload();await page.locator('#asset').waitFor({state:'visible'});assert.match(await page.locator('#documentedView').textContent(),/18/);
+ console.log('PASS Menge per Foto -> Simulation -> Bestätigung -> strukturiertes Ergebnis bleibt, Foto verworfen');
 
  await page.locator('#continueTask').click();
  await page.locator('#capture').waitFor({state:'visible'});
@@ -46,8 +47,8 @@ const base=process.env.GP_TEST_URL||'http://127.0.0.1:8765/';
  await page.waitForFunction(()=>!document.querySelector('#saveBtn').disabled);
  await page.locator('#saveBtn').click();
  await page.locator('#asset').waitFor({state:'visible'});
- assert.equal(await page.locator('#captureCount').textContent(),'1');
- console.log('PASS Ausgangslage dokumentieren -> speichern');
+ assert.equal(await page.locator('#captureCount').textContent(),'1');assert.match(await page.locator('#nextStepTitle').textContent(),/Ausführung/);
+ console.log('PASS Ausgangslage dokumentieren -> speichern -> Materialzählung wird nicht erzwungen');
 
  await page.locator('#historyOpen').click();
  await page.locator('#history').waitFor({state:'visible'});
