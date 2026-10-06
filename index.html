@@ -6,101 +6,101 @@
 <meta name="theme-color" content="#111827">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
-<title>GroundProof · Physical Reality Ledger</title>
+<title>GroundProof · Baustellen-Nachweis</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 <script type="module" src="app.js"></script>
 </head>
 <body><main class="app">
 <header><div class="brand">GroundProof</div><div class="tag">Prototype · lokal</div></header>
-<p class="notice">Lokaler Prototyp · Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p>
+<details class="privacy-top"><summary>Datenschutz dieses Prototyps</summary><p class="notice">Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p></details>
 <p id="message" role="status" aria-live="polite" hidden></p>
 <p id="legacy" class="notice" hidden></p>
 <section id="home">
-  <div class="eyebrow">Physical Reality Ledger</div>
-  <h1>Von der Einschätzung bis zum echten Ergebnis.</h1>
-  <p class="lead">GroundProof verbindet, was du vor Ort erwartest, mit dem, was tatsächlich vorhanden, ausgeführt und übrig geblieben ist – nachvollziehbar am selben realen Objekt.</p>
+  <div class="eyebrow">Einfacher Baustellen-Nachweis</div>
+  <h1>Zeige in Sekunden, was vor Ort geplant war, gemacht wurde und wie es jetzt aussieht.</h1>
+  <p class="lead">GroundProof verbindet Fotos, Arbeitsschritte und Abweichungen zu einem gemeinsamen Verlauf. Per QR-Code können beteiligte Firmen denselben Arbeitsbereich schnell öffnen und nachvollziehen – statt Fotos und Informationen über Chats, Ordner und Personen zusammensuchen zu müssen.</p>
   <div class="journey" aria-label="GroundProof Ablauf">
-    <div><b>1</b><span>Assess</span><small>Ausgangslage</small></div>
-    <div><b>2</b><span>Count</span><small>Tatsächlich da</small></div>
-    <div><b>3</b><span>Build</span><small>Ausgeführt</small></div>
-    <div><b>4</b><span>Yield</span><small>Ergebnis</small></div>
+    <div><b>1</b><span>Auftrag</span><small>Was ist geplant?</small></div>
+    <div><b>2</b><span>Bestand</span><small>Was ist vor Ort?</small></div>
+    <div><b>3</b><span>Ausführung</span><small>Was wurde gemacht?</small></div>
+    <div><b>4</b><span>Ergebnis</span><small>Was ist entstanden?</small></div>
   </div>
-  <div class="value-card"><strong>Ein Capture soll mehr sein als ein Foto.</strong><p>GroundProof hält Erwartung, Veränderung und Ergebnis als zusammenhängenden Verlauf fest.</p></div>
+  <div class="value-card"><strong>Aus Baustellenfotos wird ein nachvollziehbarer Arbeitsverlauf.</strong><p>Beispiel: Ein Elektriker dokumentiert geplante Leitungswege, vorhandene Anschlüsse, verlegte Meter, Abweichungen und den fertigen Anschluss – alles beim selben Arbeitsbereich.</p></div>
   <form id="identityForm" class="card" method="get">
-    <label for="identityInput">Testfall öffnen</label>
-    <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="GP-WALL-001" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
-    <small id="idHelp">1–64 Zeichen: Buchstaben, Ziffern, - und _. Gross-/Kleinschreibung wird unterschieden.</small>
-    <button type="submit">Testfall starten <span aria-hidden="true">→</span></button>
+    <label for="identityInput">Projekt / Arbeitsbereich</label>
+    <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="Musterprojekt-Wand-A" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
+    <small id="idHelp">Zum Testen z. B. „Musterprojekt-Wand-A“. Später kann derselbe Arbeitsbereich direkt per QR-Code geöffnet werden.</small>
+    <button type="submit">Projekt öffnen <span aria-hidden="true">→</span></button>
   </form>
   <p class="muted">Im späteren Einsatz öffnet ein QR-Code genau diesen realen Ort, Gegenstand oder Materialposten. Für den Prototyp kannst du direkt mit dem Testfall starten.</p>
 </section>
 <section id="asset" hidden>
-  <div id="phaseStrip" class="phase-strip" aria-label="Arbeitsablauf"><span>Assess</span><span>Count</span><span>Build</span><span>Yield</span></div>
-  <div class="eyebrow">Aktueller Testfall</div><h1 id="assetId"></h1>
-  <p class="lead">Dokumentiere die reale Ausgangslage und führe denselben Fall später bis zum tatsächlichen Ergebnis weiter.</p>
+  <div id="phaseStrip" class="phase-strip" aria-label="Arbeitsablauf"><span>Auftrag</span><span>Bestand</span><span>Ausführung</span><span>Ergebnis</span></div>
+  <div class="eyebrow">Projekt / Arbeitsbereich</div><h1 id="assetId"></h1>
+  <p class="lead">Hier entsteht der gemeinsame Verlauf dieses Arbeitsbereichs: Auftrag, Situation vor Ort, ausgeführte Arbeit, Abweichungen und Ergebnis.</p>
   <div class="insight-grid">
     <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
     <article><small>Realität</small><strong id="actualSummary">Noch kein Capture</strong></article>
   </div>
   <div id="caseSetup" class="card">
-    <h2>Was soll hier passieren?</h2>
-    <p class="muted">Definiere kurz den erwarteten Umfang. GroundProof stellt ihn später der dokumentierten Realität gegenüber.</p>
+    <h2>Was ist an diesem Ort geplant?</h2>
+    <p class="muted">Beschreibe den Auftrag oder Soll-Zustand. Mengen sind optional und können in der passenden Einheit erfasst werden – z. B. m, m², Stück, kg, Liter oder Stunden.</p>
     <label for="scopeInput">Erwarteter Umfang</label>
-    <textarea id="scopeInput" rows="2" maxlength="280" placeholder="z. B. Wand vollständig dämmen und verkleiden"></textarea>
+    <textarea id="scopeInput" rows="2" maxlength="280" placeholder="z. B. Leitung vom Verteiler bis Steckdose verlegen"></textarea>
     <div class="row">
-      <div><label for="plannedQty">Geplant</label><input id="plannedQty" type="number" inputmode="decimal" min="0" step="any" placeholder="22"></div>
-      <div><label for="qtyUnit">Einheit</label><input id="qtyUnit" maxlength="12" placeholder="m²"></div>
+      <div><label for="plannedQty">Geplante Menge (optional)</label><input id="plannedQty" type="number" inputmode="decimal" min="0" step="any" placeholder="18"></div>
+      <div><label for="qtyUnit">Einheit</label><input id="qtyUnit" maxlength="12" placeholder="m, m², Stk."></div>
     </div>
-    <button id="savePlan" type="button" class="secondary">Erwartung festhalten</button>
+    <button id="savePlan" type="button" class="secondary">Auftrag / Soll festhalten</button>
   </div>
   <div id="comparison" class="comparison" hidden>
     <div><small>Geplant</small><strong id="plannedView">—</strong></div><div aria-hidden="true">→</div><div><small>Dokumentiert</small><strong id="documentedView">—</strong></div>
   </div>
   <div class="card">
-    <div class="muted">Letzter bestätigter Zustand</div><h2 id="lastState" class="state"></h2>
+    <div class="muted">Letzter dokumentierter Stand</div><h2 id="lastState" class="state"></h2>
     <p id="lastNote" class="state"></p><time id="lastTime"></time>
-    <p><b id="captureCount">0</b> Evidence Captures</p>
-    <p>Letzter Change: <strong id="lastChange">—</strong></p>
+    <p><b id="captureCount">0</b> Einträge mit Foto</p>
+    <p>Letzte Änderung: <strong id="lastChange">—</strong></p>
   </div>
-  <button id="captureStart">Ausgangslage erfassen <span aria-hidden="true">→</span></button>
-  <button id="historyOpen" class="secondary">Vollständige History</button>
-  <details class="card"><summary>Link / QR-Ziel dieser Physical ID</summary><a id="identityLink" class="identity-link"></a><p class="muted">Den Link als QR-Ziel verwenden und am Objekt anbringen. Auf einem anderen Gerät öffnet sich dieselbe ID, aber nicht die hier lokal gespeicherte History.</p></details>
+  <button id="captureStart">Vor-Ort-Zustand dokumentieren <span aria-hidden="true">→</span></button>
+  <button id="historyOpen" class="secondary">Verlauf ansehen</button>
+  <details class="card"><summary>QR-Link für diesen Arbeitsbereich</summary><a id="identityLink" class="identity-link"></a><p class="muted">Diesen Link kann ein QR-Code am Arbeitsbereich öffnen. Im lokalen Prototyp bleibt der gespeicherte Verlauf jedoch auf diesem Gerät.</p></details>
 </section>
 <section id="capture" hidden>
-  <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist tatsächlich hier?</h1><p id="captureId"></p>
-  <p class="lead">Foto aufnehmen, Veränderung einordnen und bestätigen. Daraus entsteht ein nachvollziehbarer Zustand im selben Fall.</p>
+  <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist vor Ort – und was passiert jetzt?</h1><p id="captureId"></p>
+  <p class="lead">Dokumentiere Bestand, ausgeführte Arbeit, Material oder Ergebnis. Eine Menge ist optional; wähle die Einheit passend zum Gewerk.</p>
   <fieldset id="captureFields">
-    <label for="photo">Foto aufnehmen (Pflicht)</label>
-    <input id="photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
-    <details><summary>Kamera fehlt? Foto aus Dateien wählen</summary><label for="photoFallback">Vorhandenes Foto</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
-    <small>JPEG, PNG oder WebP · maximal 20 MiB / 48 Megapixel. Originaldatei bleibt erhalten; eine verkleinerte Ansicht wird zusätzlich erzeugt.</small>
+    <label for="photo" class="camera-button">📷 Foto aufnehmen</label>
+    <input id="photo" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+    <details class="camera-help"><summary>Kamera fehlt oder öffnet nicht?</summary><label for="photoFallback">Vorhandenes Foto auswählen</label><input id="photoFallback" type="file" accept="image/jpeg,image/png,image/webp"></details>
+    <small>Foto aufnehmen oder auswählen. Technische Dateidetails findest du später unter den Nachweisdetails.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
-    <label for="stageType">Wo bist du im Ablauf?</label><select id="stageType"><option value="assess">Assess · Ausgangslage</option><option value="count">Count · Bestand / Menge</option><option value="build">Build · Ausführung</option><option value="yield">Yield · Ergebnis</option></select>
+    <label for="stageType">Was dokumentierst du?</label><select id="stageType"><option value="assess">Auftrag / Soll</option><option value="count">Bestand vor Ort</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Ergebnis / Abschluss</option></select>
     <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
-    <div class="confidence"><span>GroundProof-Ausgabe</span><strong>Von dir bestätigt</strong><small>Dieser Prototyp erkennt Inhalte noch nicht automatisch. Angaben stammen von dir; das Foto bleibt als Original Evidence getrennt gespeichert.</small></div>
+    <details class="capture-options"><summary>Weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
     <div class="row">
-      <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="20.8"></div>
+      <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div>
       <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="m²"></div>
     </div>
-    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea>
-    <p id="confirmation" class="notice"></p>
-    <button id="saveBtn" type="button" disabled>Angaben bestätigen &amp; Proof speichern</button>
+    <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
+    <p id="confirmation" class="capture-confirmation"></p>
+    <button id="saveBtn" type="button" disabled>Eintrag speichern</button>
   </fieldset>
   <button id="cancelCapture" type="button" class="secondary">Abbrechen</button>
 </section>
 <section id="history" hidden>
   <div class="eyebrow">Soll / Ist</div><h1>Was ist wirklich passiert?</h1><p id="historyId"></p>
   <p class="lead">Alle bestätigten Zustände dieses realen Falls – vom Ausgangspunkt bis zum Ergebnis. So wird aus einzelnen Fotos ein zusammenhängender Verlauf.</p>
-  <p id="integrity" class="notice"></p>
+  <details class="integrity-box"><summary>Technische Prüfung</summary><p id="integrity" class="notice"></p></details>
   <ol id="timeline"></ol>
-  <div id="outcome" class="outcome" hidden><small>GroundProof Vergleich</small><h2 id="outcomeTitle">Soll / Ist</h2><p id="outcomeText"></p><p class="muted">Nur aus deinen bestätigten Angaben berechnet; keine automatische Vermessung.</p></div>
+  <div id="outcome" class="outcome" hidden><small>Soll / Ist Vergleich</small><h2 id="outcomeTitle">Soll / Ist</h2><p id="outcomeText"></p><p class="muted">Nur aus bestätigten Angaben berechnet. GroundProof vermisst oder beurteilt die Arbeit in diesem Prototyp nicht automatisch.</p></div>
   <button id="captureAgain">+ Nächsten Schritt erfassen</button>
-  <button id="backAsset" class="secondary">Zurück zur Physical ID</button>
+  <button id="backAsset" class="secondary">Zurück zum Arbeitsbereich</button>
 </section>
-<p class="privacy">Hashing ist ein Integrity/Provenance Mechanism für lokale Datenkonsistenz. Es belegt weder Urheber, Aufnahmezeit, Ort noch Wahrheit der Angaben und verleiht keine rechtliche Beweiskraft. Wer Browserdaten kontrolliert, kann die gesamte Kette neu berechnen oder löschen.</p>
+<details class="privacy"><summary>Rechtlicher und technischer Hinweis</summary><p>Die technische Prüfung schützt nur die lokale Konsistenz. Sie bestätigt weder Urheber, Aufnahmeort, Wahrheit der Angaben noch rechtliche Beweiskraft.</p></details>
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
-<nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Physical ID</button><button id="navHistory" class="secondary" disabled>History</button></nav>
+<nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
 </body></html>

@@ -1,4 +1,8 @@
-# V0.2 QA report · 2026-10-06
+# V0.3 QA report · 2026-10-06
+
+## Direct field feedback incorporated
+
+A first real tester understood the history and judged GroundProof clearly more useful than two timestamped photos, especially for interdisciplinary work between construction companies. Usability was not yet intuitive and the measured capture flow was 30.1 seconds. V0.3 therefore treats comprehension and interaction cost as the primary defect: German construction language, clearer first-screen value proposition, project/work-area naming, dominant camera control, simpler save path and secondary technical/legal detail.
 
 ## Review status
 

@@ -47,7 +47,7 @@ function render() {
   const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
-  $('captureStart').textContent=last?'Nächsten realen Schritt erfassen →':'Ausgangslage erfassen →';
+  $('captureStart').textContent=last?'Nächsten realen Schritt erfassen →':'Vor-Ort-Zustand dokumentieren →';
   const link=new URL(location.href);link.search='';link.hash='';link.searchParams.set('id',physicalId);
   $('identityLink').href=link.href;$('identityLink').textContent=link.href;
   $('captureStart').disabled=$('captureAgain').disabled=!healthy;
@@ -65,9 +65,9 @@ function render() {
     const img=element('img',undefined,'preview');img.alt='Verkleinerte Ansicht · Capture '+entry.sequence;img.loading='lazy';
     const preview=URL.createObjectURL(evidence.preview);historyURLs.push(preview);img.src=preview;item.append(img);
     const original=URL.createObjectURL(evidence.original);historyURLs.push(original);
-    const download=element('a','Original Evidence öffnen / herunterladen','download');download.href=original;download.download=`${physicalId}-${entry.sequence}.${({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'})[entry.originalEvidence.mime]}`;
+    const download=element('a','Datei herunterladen','download');download.href=original;download.download=`${physicalId}-${entry.sequence}.${({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'})[entry.originalEvidence.mime]}`;
     item.append(download,element('small',`Original unverändert gespeichert · ${(entry.originalEvidence.bytes/1024/1024).toFixed(2)} MiB`));
-    const details=element('details');details.append(element('summary','Integrity / Provenance · Hashes'));
+    const details=element('details');details.append(element('summary','Technische Nachweisdetails'));
     for(const [label,value] of [['Original SHA-256',entry.originalEvidence.sha256],['Verkleinerte Ansicht SHA-256',entry.derived.previewSha256],['Ledger SHA-256',entry.hash],['Vorheriger Ledger-Hash',entry.previousHash]])details.append(element('div',label,'muted'),element('div',value,'hash'));
     item.append(details);$('timeline').append(item);
   });
@@ -83,9 +83,7 @@ async function refresh() {
   } catch(e) {if(ticket!==refreshGeneration)return;snapshot={entries:[],evidence:[]};message(friendlyError(e),'error');}
   render();
 }
-function confirmation() {
-  $('confirmation').textContent='Mit Speichern bestätigst du für '+physicalId+': '+stateFor($('eventType').value,snapshot.entries.at(-1))+'. Foto und optionale Notiz werden diesem Capture zugeordnet.';
-}
+function confirmation() {$('confirmation').textContent=prepared?'Foto bereit. Optional weitere Angaben ergänzen oder direkt speichern.':'Nimm zuerst ein Foto auf.';}
 async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
@@ -103,20 +101,20 @@ async function choosePhoto(event) {
     const result=await prepareEvidence(file);
     if(ticket!==generation)return;
     prepared=result;previewURL=URL.createObjectURL(result.preview);$('preview').src=previewURL;$('preview').hidden=false;
-    $('photoStatus').textContent=`Foto bereit · Ansicht ${Math.round(result.preview.size/1024)} KiB · Original separat erhalten.`;
+    $('photoStatus').textContent='Foto bereit ✓';confirmation();
   } catch(e) {if(ticket===generation){$('photoStatus').textContent='Kein Foto bereit.';message(friendlyError(e),'error');}}
   finally {if(ticket===generation){processing=false;$('saveBtn').disabled=!prepared || !healthy || saving;}}
 }
 async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
-  busy(true);message('Proof wird lokal gespeichert …');
+  busy(true);message('Eintrag wird gespeichert …');
   try {
     const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;
     const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
     clearCapture();await refresh();show('asset');
-    if(healthy)message(`Capture #${entry.sequence} gespeichert · ${seconds.toFixed(1)} Sekunden vom Öffnen bis zur Speicherung. ${seconds<10?'Unter dem 10-Sekunden-Ziel.':'Über dem 10-Sekunden-Ziel.'}`,'success');
+    if(healthy)message(`Eintrag gespeichert · ${seconds.toFixed(1)} Sekunden. ${seconds<10?'Schneller Ablauf ✓':'Für den Schnellablauf noch zu langsam.'}`,'success');
     else message('Capture wurde gespeichert, aber die anschliessende Prüfung ist fehlgeschlagen. Bitte Seite neu laden.','error');
   } catch(e) {message(friendlyError(e),'error');}
   finally {busy(false);}
