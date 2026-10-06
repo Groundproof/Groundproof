@@ -108,7 +108,7 @@ async function refresh() {
   render();
 }
 function confirmation() {$('confirmation').textContent=prepared?'Foto bereit. Optional weitere Angaben ergänzen oder direkt speichern.':'Nimm zuerst ein Foto auf.';}
-async async function startCapture() {
+async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
