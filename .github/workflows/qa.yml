@@ -1,0 +1,28 @@
+name: GroundProof workflow QA
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+      - name: Static checks
+        run: |
+          node --check app.js
+          node --check ledger.js
+          node tests/core.mjs
+      - name: Install Chromium QA
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Serve prototype
+        run: |
+          python3 -m http.server 8765 >/tmp/gp-http.log 2>&1 &
+          sleep 2
+      - name: Run workflows
+        env:
+          GP_TEST_URL: http://127.0.0.1:8765/
+        run: node tests/workflows.cjs
