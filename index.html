@@ -9,13 +9,29 @@
 <title>GroundProof · Vor Ort nachvollziehbar</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=1173"></script>
 </head>
 <body><main class="app">
 <header><div class="brand">GroundProof</div><div class="tag">Prototype · lokal</div></header>
 <details class="privacy-top"><summary>Datenschutz dieses Prototyps</summary><p class="notice">Fotos und Angaben bleiben in diesem Browser. Kein Upload, keine Synchronisation. Browserdaten löschen entfernt den Verlauf.</p></details>
 <p id="message" role="status" aria-live="polite" hidden></p>
 <p id="legacy" class="notice" hidden></p>
+<section id="register" hidden>
+  <div class="eyebrow">Einmalige Einrichtung</div>
+  <h1>Wer dokumentiert?</h1>
+  <p class="lead">Damit jeder Eintrag eindeutig einer Person und Firma zugeordnet ist, richtest du vor der Nutzung dein lokales Testprofil ein.</p>
+  <form id="registerForm" class="card">
+    <label for="registerName">Name *</label>
+    <input id="registerName" required autocomplete="name">
+    <label for="registerCompany">Firma *</label>
+    <input id="registerCompany" required autocomplete="organization">
+    <label for="registerRole">Rolle *</label>
+    <input id="registerRole" required placeholder="z. B. Elektroinstallateur">
+    <label class="check-row"><input id="registerConfirm" type="checkbox" required> <span>Ich bestätige, dass diese Angaben für den Prototyp verwendet werden dürfen.</span></label>
+    <button type="submit">Profil einrichten</button>
+  </form>
+  <p class="muted">Prototyp: Das Profil bleibt nur lokal in diesem Browser. Es wird kein echtes Benutzerkonto erstellt und nichts an einen Server gesendet.</p>
+</section>
 <section id="home">
   <div class="hero-proof">
     <div class="hero-kicker"><span></span>Für Handwerk & Arbeiten vor Ort</div>
