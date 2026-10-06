@@ -105,7 +105,7 @@ async function refresh() {
   render();
 }
 function confirmation() {$('confirmation').textContent=prepared?'Foto bereit. Optional weitere Angaben ergänzen oder direkt speichern.':'Nimm zuerst ein Foto auf.';}
-async function startCapture() {
+async async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
@@ -173,7 +173,15 @@ $('simulateCount').addEventListener('click',()=>{if(!prepared){message('Nimm zue
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{});
-for(const id of ['captureStart','EintragAgain','continueTask','assignmentPhoto'])$(id).addEventListener('click',startCapture);
+for(const id of ['captureStart','EintragAgain','continueTask'])$(id).addEventListener('click',startCapture);
+$('assignmentPhoto').addEventListener('click',async()=>{
+  await startCapture();
+  $('stageType').value='count';
+  updateGuidance();
+  confirmation();
+  $('photoStatus').textContent='Foto aufnehmen: GroundProof simuliert daraus Material und Menge. Das Foto dient hier nur der Analyse.';
+  requestAnimationFrame(()=>$('photo').click());
+});
 for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
 $('navHome').addEventListener('click',()=>{if(saving)return;clearCapture();show('home');});
