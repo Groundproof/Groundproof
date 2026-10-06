@@ -94,13 +94,14 @@
     <small>Foto aufnehmen oder auswählen. Technische Dateidetails findest du später unter den Nachweisdetails.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
-    <label for="stageType">Was zeigt das Foto?</label><select id="stageType"><option value="assess">Ausgangslage / vor der Arbeit</option><option value="count">Vorhandenes Material / Bestand</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Fertiges Ergebnis</option></select>
-    <label for="eventType">Was hat sich verändert?</label><select id="eventType"></select>
-    <details class="Eintrag-options"><summary>Weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
-    <div class="row">
-      <div><label for="actualQty">Menge (optional)</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div>
-      <div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="Stk., m, m² …"></div>
+    <label for="stageType">Was hältst du gerade fest?</label><select id="stageType"><option value="assess">Ausgangslage / vor der Arbeit</option><option value="count">Material oder Bestand</option><option value="build">Ausgeführte Arbeit</option><option value="yield">Fertiges Ergebnis</option></select>
+    <div id="countPrompt" class="guided-count" hidden>
+      <strong>Wie viel ist vorhanden?</strong><small>Trage die sichtbare oder von dir geprüfte Menge ein.</small>
+      <div class="row"><div><label for="actualQty">Menge</label><input id="actualQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 8"></div><div><label for="actualUnit">Einheit</label><input id="actualUnit" maxlength="12" placeholder="Stk., m, m² …"></div></div>
     </div>
+    <label for="eventType">Was hat sich verändert?</label><select id="eventType"></select>
+    <details class="Eintrag-options"><summary>Notiz oder weitere Angaben hinzufügen</summary><div class="confidence"><strong>Angaben werden von dir bestätigt</strong><small>Der Prototyp erkennt Inhalte noch nicht automatisch.</small></div>
+    <div id="optionalQty" class="row"><div><label for="actualQtyMirror">Menge (optional)</label><input id="actualQtyMirror" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 16.5"></div><div><label for="actualUnitMirror">Einheit</label><input id="actualUnitMirror" maxlength="12" placeholder="Stk., m, m² …"></div></div>
     <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Anschluss links noch offen"></textarea></details>
     <p id="confirmation" class="Eintrag-confirmation"></p>
     <button id="saveBtn" type="button" disabled>Eintrag speichern</button>
@@ -120,5 +121,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1144"></script>
+<script type="module" src="./app.js?v=1150"></script>
 </body></html>
