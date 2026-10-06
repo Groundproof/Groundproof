@@ -1,8 +1,10 @@
-# GroundProof · Prototype V0.1
+# GroundProof · Product Prototype V0.2
 
-A CHF 0, local-browser **Physical Evidence / Material Ledger**. This extends the original `index.html` prototype: the existing Start → Physical ID → Capture → History screens and small mobile stylesheet remain the foundation. CSS and JavaScript are now separated for review and QA. No framework, runtime dependencies, build step, account, API, AI, ERP, database server, analytics or upload.
+A CHF 0, local-browser **Physical Reality Ledger** product prototype. V0.2 keeps the V0.1 evidence/integrity foundation but moves the test surface toward the intended end product: **Assess → Count → Build → Yield → planned-vs-documented outcome**. This extends the original `index.html` prototype: the existing Start → Physical ID → Capture → History screens and small mobile stylesheet remain the foundation. CSS and JavaScript are now separated for review and QA. No framework, runtime dependencies, build step, account, API, AI, ERP, database server, analytics or upload.
 
-**Flow:** QR/link → persistent Physical Identity → photo → human confirmation → reopen the same ID → last confirmed state and complete chronological history.
+**Flow:** open/QR a real case → state expected scope/quantity → capture the real condition → human-confirm change and optional actual quantity → continue the same physical case → compare planned vs documented → inspect chronological original evidence/history.
+
+V0.2 deliberately does **not** pretend to perform AI vision or automatic measurement. The prototype tests whether the end-to-end product concept makes sense before any paid/cloud AI is introduced. Quantities and scope are human-confirmed; the UI labels this boundary. The differentiating hypothesis is the continuous expected → actual → execution → outcome record, not photo-to-quote alone.
 
 Count, Build and Yield are future applications of this same ledger, not separate products. V0.1 is not a ticket system or a photo archive: every capture is associated with an explicit identity, confirmed change, resulting state and predecessor.
 
