@@ -36,21 +36,26 @@
   <p class="muted">Im späteren Einsatz öffnet ein QR-Code genau diesen realen Ort, Gegenstand oder Materialposten. Für den Prototyp kannst du direkt mit dem Testfall starten.</p>
 </section>
 <section id="asset" hidden>
-  <div class="muted">Physical Identity</div><h1 id="assetId"></h1>
-  <p class="muted">Die ID ordnet Captures zu. Die App überprüft nicht, welches reale Objekt du fotografierst.</p>
+  <div class="phase-strip" aria-label="Arbeitsablauf"><span class="active">Assess</span><span>Count</span><span>Build</span><span>Yield</span></div>
+  <div class="eyebrow">Aktueller Testfall</div><h1 id="assetId"></h1>
+  <p class="lead">Dokumentiere die reale Ausgangslage und führe denselben Fall später bis zum tatsächlichen Ergebnis weiter.</p>
+  <div class="insight-grid">
+    <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
+    <article><small>Realität</small><strong id="actualSummary">Noch kein Capture</strong></article>
+  </div>
   <div class="card">
     <div class="muted">Letzter bestätigter Zustand</div><h2 id="lastState" class="state"></h2>
     <p id="lastNote" class="state"></p><time id="lastTime"></time>
     <p><b id="captureCount">0</b> Evidence Captures</p>
     <p>Letzter Change: <strong id="lastChange">—</strong></p>
   </div>
-  <button id="captureStart">+ Foto &amp; Change erfassen</button>
+  <button id="captureStart">Ausgangslage erfassen <span aria-hidden="true">→</span></button>
   <button id="historyOpen" class="secondary">Vollständige History</button>
   <details class="card"><summary>Link / QR-Ziel dieser Physical ID</summary><a id="identityLink" class="identity-link"></a><p class="muted">Den Link als QR-Ziel verwenden und am Objekt anbringen. Auf einem anderen Gerät öffnet sich dieselbe ID, aber nicht die hier lokal gespeicherte History.</p></details>
 </section>
 <section id="capture" hidden>
-  <h1>Capture bestätigen</h1><p id="captureId"></p>
-  <p class="muted">Foto → Change wählen → bestätigen. Ziel: unter 10 Sekunden; die tatsächliche Zeit wird gemessen.</p>
+  <div class="eyebrow">Vor Ort erfassen</div><h1>Was ist tatsächlich hier?</h1><p id="captureId"></p>
+  <p class="lead">Foto aufnehmen, Veränderung einordnen und bestätigen. Daraus entsteht ein nachvollziehbarer Zustand im selben Fall.</p>
   <fieldset id="captureFields">
     <label for="photo">Foto aufnehmen (Pflicht)</label>
     <input id="photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
@@ -58,7 +63,8 @@
     <small>JPEG, PNG oder WebP · maximal 20 MiB / 48 Megapixel. Originaldatei bleibt erhalten; eine verkleinerte Ansicht wird zusätzlich erzeugt.</small>
     <p id="photoStatus" role="status"></p>
     <img id="preview" class="preview" alt="Verkleinerte Vorschau des ausgewählten Fotos" hidden>
-    <label for="eventType">Was hat sich verändert?</label><select id="eventType"></select>
+    <label for="eventType">Was beschreibt diesen Schritt?</label><select id="eventType"></select>
+    <div class="confidence"><span>GroundProof-Ausgabe</span><strong>Von dir bestätigt</strong><small>Dieser Prototyp erkennt Inhalte noch nicht automatisch. Angaben stammen von dir; das Foto bleibt als Original Evidence getrennt gespeichert.</small></div>
     <label for="note">Notiz (optional)</label><textarea id="note" rows="2" maxlength="500" placeholder="z. B. Dämmung montiert; Anschluss links noch offen"></textarea>
     <p id="confirmation" class="notice"></p>
     <button id="saveBtn" type="button" disabled>Angaben bestätigen &amp; Proof speichern</button>
@@ -66,8 +72,8 @@
   <button id="cancelCapture" type="button" class="secondary">Abbrechen</button>
 </section>
 <section id="history" hidden>
-  <h1>History</h1><p id="historyId"></p>
-  <p class="muted">Chronologisch: ältester → neuester Capture. Jeder Eintrag bestätigt einen Zustand und dokumentiert einen Change derselben Physical ID.</p>
+  <div class="eyebrow">Soll / Ist</div><h1>Was ist wirklich passiert?</h1><p id="historyId"></p>
+  <p class="lead">Alle bestätigten Zustände dieses realen Falls – vom Ausgangspunkt bis zum Ergebnis. So wird aus einzelnen Fotos ein zusammenhängender Verlauf.</p>
   <p id="integrity" class="notice"></p>
   <ol id="timeline"></ol>
   <button id="captureAgain">+ Neuer Capture</button>
