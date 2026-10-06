@@ -45,8 +45,10 @@
 </section>
 <section id="asset" hidden>
   <div id="phaseStrip" class="phase-strip" aria-label="Arbeitsablauf"><span>Auftrag</span><span>Bestand</span><span>Ausführung</span><span>Ergebnis</span></div>
-  <div class="eyebrow">Projekt / Arbeitsbereich</div><h1 id="assetId"></h1>
-  <p class="lead">Hier entsteht der gemeinsame Verlauf dieses Arbeitsbereichs: Auftrag, Situation vor Ort, ausgeführte Arbeit, Abweichungen und Ergebnis.</p>
+  <div class="eyebrow">Projektstruktur</div>
+  <div class="project-path" aria-label="Projektpfad"><span id="projectName">Musterbau MFH Seestrasse</span><span aria-hidden="true">›</span><strong id="subprojectName">Elektro · Wohnung 2.1</strong></div>
+  <h1 id="assetId"></h1>
+  <p class="lead">Du arbeitest immer innerhalb eines vom Projektowner angelegten Projekts und Unterprojekts. Darin dokumentierst du deinen zugewiesenen Arbeitsbereich.</p>
   <div class="insight-grid">
     <article><small>Erwartung</small><strong id="expectedSummary">Noch nicht erfasst</strong></article>
     <article><small>Realität</small><strong id="actualSummary">Noch kein Eintrag</strong></article>
@@ -55,6 +57,7 @@
     <div class="eyebrow">Vom Projekt vorgegeben</div>
     <h2>Dein Auftrag vor Ort</h2>
     <p class="muted">Der Projektauftrag wird vom Projektverantwortlichen vorgegeben. Als Mitarbeitender dokumentierst du hier die tatsächliche Situation und Ausführung.</p>
+    <div class="assignment-meta"><div><small>Projekt</small><strong>Musterbau MFH Seestrasse</strong></div><div><small>Unterprojekt</small><strong>Elektro · Wohnung 2.1</strong></div><div><small>Arbeitsbereich</small><strong>Wand A · Steckdose</strong></div></div>
     <label for="scopeInput">Auftrag / gewünschtes Ergebnis</label>
     <textarea id="scopeInput" rows="2" maxlength="280" readonly aria-readonly="true"></textarea>
     <details class="plan-details"><summary>Menge oder weitere Angaben hinzufügen</summary>
@@ -127,5 +130,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1155"></script>
+<script type="module" src="./app.js?v=1156"></script>
 </body></html>
