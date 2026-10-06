@@ -52,17 +52,18 @@
     <article><small>Realität</small><strong id="actualSummary">Noch kein Eintrag</strong></article>
   </div>
   <div id="caseSetup" class="card setup-simple">
-    <h2>Was soll hier gemacht werden?</h2>
-    <p class="muted">Beschreibe den Auftrag kurz. Ein Foto und Details kannst du direkt beim ersten Eintrag ergänzen.</p>
+    <div class="eyebrow">Vom Projekt vorgegeben</div>
+    <h2>Dein Auftrag vor Ort</h2>
+    <p class="muted">Der Projektauftrag wird vom Projektverantwortlichen vorgegeben. Als Mitarbeitender dokumentierst du hier die tatsächliche Situation und Ausführung.</p>
     <label for="scopeInput">Auftrag / gewünschtes Ergebnis</label>
-    <textarea id="scopeInput" rows="2" maxlength="280" placeholder="z. B. Neue Steckdose neben der Tür installieren"></textarea>
+    <textarea id="scopeInput" rows="2" maxlength="280" readonly aria-readonly="true"></textarea>
     <details class="plan-details"><summary>Menge oder weitere Angaben hinzufügen</summary>
       <div class="row">
         <div><label for="plannedQty">Menge (optional)</label><input id="plannedQty" type="number" inputmode="decimal" min="0" step="any" placeholder="z. B. 2"></div>
         <div><label for="qtyUnit">Einheit</label><input id="qtyUnit" maxlength="12" placeholder="Stk., m, m² …"></div>
       </div>
     </details>
-    <button id="savePlan" type="button" class="secondary">Auftrag speichern</button>
+    <button id="savePlan" type="button" class="secondary" hidden>Auftrag speichern</button>
   </div>
   <div id="comparison" class="comparison" hidden>
     <div><small>Geplant</small><strong id="plannedView">—</strong></div><div aria-hidden="true">→</div><div><small>Dokumentiert</small><strong id="documentedView">—</strong></div>
@@ -126,5 +127,5 @@
 <noscript>Für die lokale Erfassung muss JavaScript aktiviert sein.</noscript>
 </main>
 <nav aria-label="Navigation"><button id="navHome" class="secondary">Start</button><button id="navAsset" class="secondary" disabled>Arbeitsbereich</button><button id="navHistory" class="secondary" disabled>Verlauf</button></nav>
-<script type="module" src="./app.js?v=1154"></script>
+<script type="module" src="./app.js?v=1155"></script>
 </body></html>
