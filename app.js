@@ -169,7 +169,7 @@ $('eventType').addEventListener('change',confirmation);
 $('actualQtyMirror').addEventListener('input',()=>{$('actualQty').value=$('actualQtyMirror').value;});
 $('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('actualUnitMirror').value;});
 $('countConfirm').addEventListener('click',()=>{
-  const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();
+  const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim(),material=$('materialType').value.trim()||'Rohre';
   if(!q||!u){message('Bitte erkannte Menge und Einheit prüfen.','error');return;}
   const profile=getProfile();setCount({value:Number(q),unit:u,material,suggestedValue:18,source:'simulated-photo-analysis',humanConfirmed:true,confirmedAt:new Date().toISOString(),author:profile?{name:profile.name,company:profile.company}:null});
   clearDraft();clearCapture();show('asset');
