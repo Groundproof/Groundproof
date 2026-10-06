@@ -202,6 +202,10 @@ async function init() {
     else show('home');
   } catch(e) {message(friendlyError(e),'error');}
 }
-window.addEventListener('pagehide',()=>{generation++;refreshGeneration++;if(previewURL)URL.revokeObjectURL(previewURL);revokeHistory();db?.close();});
-window.addEventListener('pageshow',e=>{if(e.persisted)location.reload();});
+window.addEventListener('pagehide',()=>{generation++;refreshGeneration++;if(previewURL)URL.revokeObjectURL(previewURL);revokeHistory();});
+window.addEventListener('pageshow',async e=>{
+  if(!e.persisted)return;
+  try{db=await openDB();if(physicalId)await refresh();message();}
+  catch(err){message(friendlyError(err),'error');}
+});
 init();
