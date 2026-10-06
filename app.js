@@ -30,7 +30,7 @@ function busy(value) {
 function clearCapture() {
   generation++;prepared=null;processing=false;
   if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;
-  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('eventType').value='updated';$('stageType').value='assess';
+  $('photo').value='';$('photoFallback').value='';$('note').value='';$('actualQty').value='';$('actualUnit').value='';$('actualQtyMirror').value='';$('actualUnitMirror').value='';$('eventType').value='updated';$('stageType').value='assess';updateGuidance();
   $('preview').removeAttribute('src');$('preview').hidden=true;$('photoStatus').textContent='';$('saveBtn').disabled=true;
 }
 function revokeHistory() {for(const url of historyURLs)URL.revokeObjectURL(url);historyURLs=[];$('timeline').replaceChildren();}
@@ -92,7 +92,7 @@ async function startCapture() {
   if(saving)return;
   captureStarted=performance.now();clearCapture();message();
   await refresh();if(!healthy)return;
-  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';confirmation();show('capture');
+  const last=snapshot.entries.at(-1), order=['assess','count','build','yield'];if(last){const i=order.indexOf(stageFrom(last.human.note));$('stageType').value=order[Math.min(i+1,3)];}else $('stageType').value='assess';updateGuidance();confirmation();show('capture');
 }
 async function choosePhoto(event) {
   const file=event.target.files?.[0];
@@ -113,7 +113,7 @@ async function saveProof() {
   if(saving || processing || !prepared || !healthy)return;
   busy(true);message('Eintrag wird gespeichert …');
   try {
-    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName)throw new Error('Bitte gib an, wer diesen Eintrag dokumentiert.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
+    const q=$('actualQty').value.trim(),u=$('actualUnit').value.trim();if($('stageType').value==='count'&&(!q||!u))throw new Error('Bitte Menge und Einheit für den Bestand angeben.');let note=$('note').value.trim();if(q){if(!u)throw new Error('Bitte eine Einheit zur Menge angeben.');note+=(note?' ':'')+`[GPQ:${q}:${u}]`;}note+=(note?' ':'')+`[GPS:${$('stageType').value}]`;const authorName=$('authorName').value.trim(),authorCompany=$('authorCompany').value.trim();if(!authorName)throw new Error('Bitte gib an, wer diesen Eintrag dokumentiert.');setAuthor({name:authorName,company:authorCompany});note+=(note?' ':'')+`[GPA:${encodeURIComponent(authorName)}:${encodeURIComponent(authorCompany)}]`;
     const entry=await appendCapture(db,physicalId,prepared,$('eventType').value,note,snapshot.entries.at(-1)?.hash || 'GENESIS');
     // End timer only after the atomic IndexedDB transaction has committed.
     const seconds=(performance.now()-captureStarted)/1000;
@@ -124,7 +124,16 @@ async function saveProof() {
   finally {busy(false);}
 }
 for(const [value,label] of Object.entries(CHANGES)) {const option=element('option',label);option.value=value;$('eventType').append(option);}
+function updateGuidance(){
+  const isCount=$('stageType').value==='count';
+  $('countPrompt').hidden=!isCount;$('optionalQty').hidden=isCount;
+  if(isCount){$('actualQty').required=true;$('actualUnit').required=true;}
+  else {$('actualQty').required=false;$('actualUnit').required=false;}
+}
+$('stageType').addEventListener('change',()=>{updateGuidance();confirmation();});
 $('eventType').addEventListener('change',confirmation);
+$('actualQtyMirror').addEventListener('input',()=>{$('actualQty').value=$('actualQtyMirror').value;});
+$('actualUnitMirror').addEventListener('input',()=>{$('actualUnit').value=$('actualUnitMirror').value;});
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
 $('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe kurz, was hier gemacht werden soll.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
