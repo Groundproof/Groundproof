@@ -51,10 +51,10 @@ function render() {
   $('lastTime').textContent=healthy && last?'Bestätigt laut Gerätezeit: '+formatTime(last.createdAt):'';
   $('captureCount').textContent=healthy?String(snapshot.entries.length):'—';
   $('lastChange').textContent=healthy && last?CHANGES[last.human.change]:'—';
-  const plan=getPlan(),stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
+  let plan=getPlan();if(!plan){plan={scope:'Neue Steckdose neben der Tür installieren',qty:'1',unit:'Stk.',owner:'Projektverantwortung',confirmedAt:'prototype'};setPlan(plan);}const stage=last?stageFrom(last.human.note):'assess',order=['assess','count','build','yield'];document.querySelectorAll('#phaseStrip span').forEach((el,i)=>el.classList.toggle('active',i<=order.indexOf(stage)));
   $('expectedSummary').textContent=plan?(plan.scope || (plan.qty?plan.qty+' '+plan.unit:'Erwartung festgehalten')):'Noch nicht erfasst';
   $('actualSummary').textContent=healthy && last?last.human.state:'Noch kein Eintrag';
-  $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';
+  $('scopeInput').value=plan?.scope||'';$('plannedQty').value=plan?.qty||'';$('qtyUnit').value=plan?.unit||'';$('plannedQty').readOnly=true;$('qtyUnit').readOnly=true;
   const qs=snapshot.entries.map(e=>quantityFrom(e.human.note)).filter(Boolean), lastQ=qs.at(-1);
   $('comparison').hidden=!(plan||lastQ);$('plannedView').textContent=plan?.qty?plan.qty+' '+plan.unit:(plan?.scope||'—');$('documentedView').textContent=lastQ?lastQ.value+' '+lastQ.unit:(last?'Zustand erfasst':'—');
   $('outcome').hidden=!(plan?.qty&&lastQ);if(plan?.qty&&lastQ){const delta=lastQ.value-Number(plan.qty),u=lastQ.unit||plan.unit;$('outcomeText').textContent=`${lastQ.value} ${u} dokumentiert gegenüber ${plan.qty} ${plan.unit}. Abweichung: ${delta>0?'+':''}${Number(delta.toFixed(2))} ${u}.`;}
@@ -169,7 +169,7 @@ $('simulateCount').addEventListener('click',()=>{
 });
 $('photo').addEventListener('change',choosePhoto);$('photoFallback').addEventListener('change',choosePhoto);
 $('saveBtn').addEventListener('click',saveProof);
-$('savePlan').addEventListener('click',()=>{const scope=$('scopeInput').value.trim(),qty=$('plannedQty').value.trim(),unit=$('qtyUnit').value.trim();if(!scope&&!qty){message('Beschreibe kurz, was hier gemacht werden soll.','error');return}if(qty&&!unit){message('Bitte eine Einheit zur geplanten Menge angeben.','error');return}setPlan({scope,qty,unit,confirmedAt:new Date().toISOString()});message('Erwartung für diesen Testfall festgehalten.','success');render();});
+$('savePlan').addEventListener('click',()=>{});
 for(const id of ['captureStart','EintragAgain','continueTask'])$(id).addEventListener('click',startCapture);
 for(const id of ['navAsset','backAsset','cancelEintrag'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('asset');await refresh();});
 for(const id of ['navHistory','historyOpen'])$(id).addEventListener('click',async()=>{if(saving || !physicalId)return;clearCapture();message();show('history');await refresh();});
