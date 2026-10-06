@@ -173,9 +173,7 @@ $('countConfirm').addEventListener('click',()=>{
   if(!q||!u){message('Bitte erkannte Menge und Einheit prüfen.','error');return;}
   const profile=getProfile();setCount({value:Number(q),unit:u,material,suggestedValue:18,source:'simulated-photo-analysis',humanConfirmed:true,confirmedAt:new Date().toISOString(),author:profile?{name:profile.name,company:profile.company}:null});
   clearDraft();clearCapture();show('asset');
-  $('documentedView').textContent=`${q} ${u}`;
-  $('comparison').hidden=false;
-  message(`Menge bestätigt: ${q} ${u}. Das Analysefoto wurde nicht als Dokumentation gespeichert.`,'success');
+  refresh().then(()=>message(`Menge bestätigt: ${q} ${u}. Das Analysefoto wurde nicht als Dokumentation gespeichert.`,'success')).catch(e=>message(friendlyError(e),'error'));
 });
 function simulateVision(){
   const material='Rohre',n=18;$('materialType').value=material;$('materialSuggestion').textContent=material;
