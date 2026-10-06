@@ -57,6 +57,23 @@ const base=process.env.GP_TEST_URL||'http://127.0.0.1:8765/';
  assert.equal(await page.locator('#timeline > li.proof').count(),1);
  console.log('PASS Verlauf öffnen');
 
+ await page.locator('#backAsset').click();await page.locator('#asset').waitFor({state:'visible'});
+ await page.locator('#continueTask').click();await page.locator('#capture').waitFor({state:'visible'});
+ assert.equal(await page.locator('#stageType').inputValue(),'build');
+ await page.locator('#photo').setInputFiles({name:'work.png',mimeType:'image/png',buffer:photo});
+ await page.waitForFunction(()=>!document.querySelector('#saveBtn').disabled);await page.locator('#saveBtn').click();await page.locator('#asset').waitFor({state:'visible'});
+ assert.match(await page.locator('#nextStepTitle').textContent(),/Ergebnis/);
+ console.log('PASS Ausführung dokumentieren -> Ergebnis wird nächster Schritt');
+
+ await page.locator('#continueTask').click();await page.locator('#capture').waitFor({state:'visible'});
+ assert.equal(await page.locator('#stageType').inputValue(),'yield');
+ await page.locator('#photo').setInputFiles({name:'result.png',mimeType:'image/png',buffer:photo});
+ await page.waitForFunction(()=>!document.querySelector('#saveBtn').disabled);await page.locator('#saveBtn').click();await page.locator('#asset').waitFor({state:'visible'});
+ await page.locator('#historyOpen').click();await page.locator('#history').waitFor({state:'visible'});
+ assert.equal(await page.locator('#timeline > li.proof').count(),3);
+ const timeline=await page.locator('#timeline').textContent();assert.match(timeline,/Ausgangslage/);assert.match(timeline,/Ausführung/);assert.match(timeline,/Ergebnis/);
+ console.log('PASS Ergebnis dokumentieren -> vollständiger deutscher Verlauf');
+
  assert.deepEqual(errors,[]);
  console.log('WORKFLOW QA PASS');
  await browser.close();
