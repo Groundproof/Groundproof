@@ -24,7 +24,7 @@ function show(id) {
 }
 function busy(value) {
   saving=value;$('captureFields').disabled=value;
-  for(const name of navigation)$(name).disabled=value || (name!=='navHome' && name!=='cancelEintrag' && !physicalId);
+  for(const name of navigation){const el=$(name);if(el)el.disabled=value || (name!=='navHome' && name!=='cancelEintrag' && !physicalId);}
   $('saveBtn').disabled=value || processing || !prepared || !healthy;
 }
 function clearCapture() {
@@ -138,7 +138,8 @@ $('identityForm').addEventListener('submit',async event=>{
   physicalId=id;
   const url=new URL(location.href);url.search='';url.hash='';url.searchParams.set('id',id);
   history.replaceState(null,'',url.href);
-  message();show('asset');await refresh();
+  message();show('asset');
+  try { await refresh(); } catch(e) { message(friendlyError(e),'error'); }
 });
 async function init() {
   // Preserve old gp_proofs verbatim. Never parse, trust, or silently migrate old test records.
