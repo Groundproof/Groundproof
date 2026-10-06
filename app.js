@@ -152,7 +152,6 @@ const EVENT_BY_STAGE={
 function updateGuidance(){
   const stage=$('stageType').value,isCount=stage==='count';
   $('stageChooser').hidden=isCount;$('eventBox').hidden=isCount;$('saveBtn').hidden=isCount;$('countConfirm').hidden=!isCount;
-  $('stageChooser').hidden=isCount;$('eventBox').hidden=isCount;$('saveBtn').hidden=isCount;$('countConfirm').hidden=!isCount;
   $('countPrompt').hidden=!isCount;$('optionalQty').hidden=isCount;
   $('actualQty').required=isCount;$('actualUnit').required=isCount;
   const cfg=EVENT_BY_STAGE[stage], select=$('eventType'), previous=select.value;
