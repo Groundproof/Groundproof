@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+concurrency:
+  group: groundproof-qa
+  cancel-in-progress: true
 jobs:
   qa:
     runs-on: ubuntu-latest
