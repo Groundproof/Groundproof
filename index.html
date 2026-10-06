@@ -17,9 +17,15 @@
 <p id="message" role="status" aria-live="polite" hidden></p>
 <p id="legacy" class="notice" hidden></p>
 <section id="home">
-  <div class="eyebrow">Einfacher Baustellen-Nachweis</div>
-  <h1>Foto machen. Arbeit festhalten. Später genau sehen, was hier passiert ist.</h1>
-  <p class="lead">GroundProof gibt einem Ort, Arbeitsbereich oder Gegenstand einen QR-Code. Wer ihn scannt, sieht die bisherigen Einträge und Fotos und kann direkt einen neuen Eintrag hinzufügen. So entsteht an genau diesem Ort Schritt für Schritt ein gemeinsamer Verlauf – von der Ausgangslage über ausgeführte Arbeiten und Veränderungen bis zum Ergebnis.</p>
+  <div class="hero-proof">
+    <div class="eyebrow">Direkt am Ort dokumentiert</div>
+    <h1>Wissen, was gemacht wurde. Ohne suchen und nachfragen.</h1>
+    <p class="hero-lead">GroundProof sammelt Fotos, Arbeitsschritte und Veränderungen dort, wo sie entstehen. So sieht jeder mit Zugriff sofort den aktuellen Stand und den bisherigen Verlauf.</p>
+    <div class="benefit-row" aria-label="Nutzen">
+      <span><b>1</b> QR-Code öffnen</span><span><b>2</b> Stand festhalten</span><span><b>3</b> Verlauf nachvollziehen</span>
+    </div>
+  </div>
+  <div class="guide-intro"><span>So funktioniert es</span><strong>Du wirst Schritt für Schritt geführt.</strong><small>Nur das erfassen, was für den aktuellen Schritt wichtig ist.</small></div>
   <div class="journey visual-timeline" aria-label="Ablauf">
     <div class="journey-step"><b>1</b><div class="step-icon" aria-hidden="true">▤</div><div class="step-copy"><span>Auftrag</span><strong>Was ist geplant?</strong><small>Was soll hier passieren?</small></div><div class="scene scene-plan" aria-hidden="true"><span class="wall-line"></span><span class="plan-box"></span><span class="plan-mark"></span></div></div>
     <div class="flow-arrow" aria-hidden="true"><span></span></div>
@@ -29,7 +35,7 @@
     <div class="flow-arrow" aria-hidden="true"><span></span></div>
     <div class="journey-step"><b>4</b><div class="step-icon step-done" aria-hidden="true">✓</div><div class="step-copy"><span>Ergebnis</span><strong>Was ist entstanden?</strong><small>Ergebnis festhalten</small></div><div class="scene scene-done" aria-hidden="true"><span class="socket-face"><i></i><i></i></span></div></div>
   </div>
-  <div class="value-card"><strong>Ein QR-Code wird zum gemeinsamen Bautagebuch für genau diesen Ort.</strong><p>Fotos, Arbeitsschritte und Veränderungen bleiben direkt dem richtigen Ort oder Gegenstand zugeordnet.</p></div>
+  <div class="value-card"><strong>Der Nutzen: Der aktuelle Stand und die Entstehungsgeschichte bleiben direkt am richtigen Ort verfügbar.</strong><p>Keine verstreuten Fotos, Nachrichten oder Notizen – und weniger Rückfragen dazu, was wann gemacht wurde.</p></div>
   <form id="identityForm" class="card" method="get">
     <label for="identityInput">Projekt / Arbeitsbereich</label>
     <input id="identityInput" name="id" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value="Musterprojekt-Wand-A" autocapitalize="characters" spellcheck="false" autocomplete="off" aria-describedby="idHelp">
