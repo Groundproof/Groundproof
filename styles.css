@@ -50,3 +50,5 @@ details{border-radius:14px}summary{cursor:pointer;padding:8px 0;font-weight:750;
 .sim-badge{display:inline-block;margin-bottom:8px;padding:4px 8px;border-radius:999px;background:#dfeae4;font-size:11px;font-weight:800;letter-spacing:.05em}.sim-result{margin:12px 0;padding:12px;border-radius:14px;background:#fff}.sim-result span,.sim-result small{display:block}.sim-result strong{display:block;margin:3px 0;font-size:24px}
 
 #register .card{display:grid;gap:9px}.consent-line{display:flex;gap:10px;align-items:flex-start;margin:10px 0}.consent-line input{width:22px;height:22px;flex:0 0 auto}.consent-line span{font-weight:600}.author-box strong{display:block}
+
+.project-path{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0 12px;font-size:14px}.project-path span:first-child{color:var(--muted)}.assignment-meta{display:grid;gap:8px;margin:12px 0 16px;padding:12px;border-radius:14px;background:#eef3f0}.assignment-meta div{display:grid;grid-template-columns:90px 1fr;gap:8px}.assignment-meta small{color:var(--muted)}.assignment-meta strong{font-size:14px}
