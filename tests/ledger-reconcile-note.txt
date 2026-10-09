@@ -1,0 +1,1 @@
+Expected: count confirmation stores original image and quantity in one appendCapture transaction. No default 18.
